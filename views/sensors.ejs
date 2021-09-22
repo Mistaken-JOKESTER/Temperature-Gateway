@@ -195,7 +195,7 @@
             data.innerHTML = '<div class="spinner-grow" role="status" id="loading"><span class="visually-hidden">Loading...</span></div>'
             axios({
                 method:'get',
-                url:"http://localhost:5000/batteryData/" + sensor_id
+                url:"http://13.233.233.37:5000/batteryData/" + sensor_id
             }).then(res => {
                 console.log(res.data)
                 data.innerHTML = '<canvas id="myChart" style="width:100%;max-width:900px;"></canvas>'
