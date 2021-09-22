@@ -109,7 +109,7 @@
                               <span aria-hidden="true">&laquo;</span>
                             </a>
                           </li>
-                          <li class="page-item"><a class="page-link" href="/sensors?offset=<%= locals.offset - 50 %>">Previos</a></li>
+                          <li class="page-item"><a class="page-link" href="/sensors?offset=<%= locals.offset - 50 %>">Previous</a></li>
                           <li class="page-item"><a class="page-link" href=""><%= locals.offset/50 %></a></li>
                           <li class="page-item"><a class="page-link" href="/sensors?offset=<%= locals.offset + 50 %>">Next</a></li>
                         </ul>
@@ -152,6 +152,7 @@
                                 </tr>
                             <% } else { %>
                                 <% locals.response.forEach((res, i) => { %>
+                                    <% console.log(res) %>
                                     <tr>
                                         <th scope="row"><%= i+1 %></th>
                                         <td><%= res.sensor_id %></td>
@@ -159,7 +160,7 @@
                                         <td ><button style="border: none;" id="battery<%= res.sensor_id %>" class="battery" onfocus="plotGraph('<%= res.sensor_id %>')" onfocusout="deleteGraph('<%= res.sensor_id %>')"><%= res.battery_voltage %></button></td>
                                         <td><%= res.condition %></td>
                                         <td><%= res.temperature %></td>
-                                        <td><%= !res.humidity?0:res.humidity %>%</td>
+                                        <td><%= res.humidity?res.humidity:0 %>%</td>
                                         <td><%= res.rssi %></td>
                                         <td><%= res.time %></td>
                                         <td><a href="/viewSensor/<%= res.sensor_id %>" class="viewBtn">&#8594;</a></td>

@@ -76,8 +76,7 @@ const parseData = async (data, ip, port) => {
     }
 
     //console.log(utils.inspect(sensor_packet, false, null))
-    // await writeLogs(sensor_packet)
-    console.log(sensor_packet)
+    await writeLogs({sensor_packet, data})
     insertPacket('4G',sensor_packet, ip, port)
 }
 
