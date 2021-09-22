@@ -1,0 +1,54 @@
+start
+54 5a
+
+104
+0 68
+
+24 24
+4 6
+2 13 0 0
+
+8 63 42 70 40 9 59 46
+
+15 9 10 b 11 33
+
+0 a
+20 5b
+8 8 11 d
+5 5
+0 1
+
+0 8
+aa
+c0
+14
+3
+1 a4
+4 be
+
+0 36
+1
+3
+data per sensor
+11
+
+sensor info
+8 21 8 64 (8525924)
+18 (11000)  low voltage, temperature alert
+e 10 3600/100 = 3.6V
+0 d2 .padStart(16, '0') 
+00 normal , positive 00000011010010 (Number('0b00000011010010'))/10, 21
+ff ff=> no humidity
+30 
+
+15 9 10 b e f 
+
+8 21 8 63 
+18 e 2e 0 d7 ff 2e 15 9 10 b c 34
+
+8 21 8 41 
+18 e 2e 0 d2 ff 32 15 9 10 b f 2
+
+0 40
+b1 9
+d a
