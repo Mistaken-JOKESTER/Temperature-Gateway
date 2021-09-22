@@ -29,7 +29,6 @@
             font-family: sans-serif;
             
         }
-
         .small-text{
             font-size: 0.9rem;
         }
@@ -49,38 +48,43 @@
         .battery:hover{
             cursor: pointer;
         }
-        .recent-link {
-            position: relative;
-            color: #252525;
-            padding-bottom: 18px;
-            font-size: 1rem;
+        .graphContiner {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 60%;
+            background-color: rgb(231, 206, 255);
+            color: white;
+            text-align: center;
         }
-        .hovercard { 
+        /* .graph { 
+            background: #ce3232;
             position: absolute; 
             opacity: 0; 
-            z-index: 1;
+            z-index: 10;
             left: 50%;
-            top: -90px;
+            top: -100px;
             transform: translateX(-50%);
+            width: 600px;
+            height: 400px;
+        } */
+        /* .recent-link .hovercard { 
+            opacity: 1; 
+            transition: 0.5s;
+            transition-delay: 0.1s;
+        } */
+        .tooltiptext {
+            display: block; 
+            flex-direction: column; 
+            justify-content: flex-start; 
+            background-color: #d8d8d8;
+            padding: 18px; 
+            border-radius: 5px; 
+            color: white; 
+            line-height: 15px;
+            transition: 1s;
+            width: 50vw;
         }
-
-.recent-link .hovercard { 
-  opacity: 1; 
-  transition: 0.5s;
-  transition-delay: 0.1s;
-}.tooltiptext {
-  display: flex; 
-  flex-direction: column; 
-  justify-content: flex-start; 
-  background-color: #d8d8d8;
-  padding: 18px; 
-  border-radius: 5px; 
-  color: white; 
-  line-height: 15px;
-  transition: 1s;
-  width: 200px;
-}
-
     </style>
 </head>
 
@@ -129,6 +133,7 @@
                           <th scope="col">Type</th>
                           <th scope="col">Battery</th>
                           <th scope="col">Condition</th>
+                          <th scope="col">Button Press</th>
                           <th scope="col">Temperature</th>
                           <th scope="col">Humidity</th>
                           <th scope="col">RSSI</th>
@@ -149,16 +154,17 @@
                                     <td>null</td>
                                     <td>null</td>
                                     <td>null</td>
+                                    <td>null</td>
                                 </tr>
                             <% } else { %>
                                 <% locals.response.forEach((res, i) => { %>
-                                    <% console.log(res) %>
                                     <tr>
                                         <th scope="row"><%= i+1 %></th>
                                         <td><%= res.sensor_id %></td>
                                         <td><%= res.type %></td>
                                         <td ><button style="border: none;" id="battery<%= res.sensor_id %>" class="battery" onfocus="plotGraph('<%= res.sensor_id %>')" onfocusout="deleteGraph('<%= res.sensor_id %>')"><%= res.battery_voltage %></button></td>
                                         <td><%= res.condition %></td>
+                                        <td><%= res.buttonPress?'🟢':'🔴' %></td>
                                         <td><%= res.temperature %></td>
                                         <td><%= res.humidity?res.humidity:0 %>%</td>
                                         <td><%= res.rssi %></td>
@@ -173,33 +179,44 @@
             </div>
     </main>
 
-    <div class="recent-link">
-        <span class="hovercard" id="hovercard" style="display: none;">
-          <div class="tooltiptext" id="data">
-            <!-- <canvas id="myChart" style="width:100%;max-width:600px; display: none;"></canvas> -->
+    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Battery Voltage Graph</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center" id="graph">
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
           </div>
-        </span>
-    </div>
+        </div>
+      </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script>
-        const card = document.getElementById('hovercard')
-        const myChart = document.getElementById('myChart')
-        const loading = document.getElementById('loading')
-        const data = document.getElementById('data')
+        var myModal = new bootstrap.Modal(document.getElementById('myModal'))
+        const graph = document.getElementById('graph')
         let charto
-
         function plotGraph(sensor_id){
             console.log(sensor_id)
-            card.style.display = 'block'
-            data.innerHTML = '<div class="spinner-grow" role="status" id="loading"><span class="visually-hidden">Loading...</span></div>'
+            if(charto instanceof Chart){
+                console.log('chart')
+                charto.destroy()
+                delete charto
+            }
+            myModal.show()
+            graph.innerHTML = '<div class="spinner-grow" role="status" id="loading" style="margin: auto 50vh;"><span class="visually-hidden">Loading...</span></div>'
             axios({
+                //13.233.233.37
                 method:'get',
-                url:"http://13.233.233.37:5000/batteryData/" + sensor_id
+                url:"http://localhost:5000/batteryData/" + sensor_id
             }).then(res => {
                 console.log(res.data)
-                data.innerHTML = '<canvas id="myChart" style="width:100%;max-width:900px;"></canvas>'
-
+                graph.innerHTML = '<canvas id="myChart" style="width:100%;max-width:800px;margin:auto;"></canvas>'
                 var xValues = [];
                 var yValues = [];
                 for (let i = 0; i < res.data.length; i++) {
@@ -207,42 +224,32 @@
                     yValues.push(bv)
                     xValues.push(i+1)
                 }
-
                 console.log(xValues, yValues)
                 charto = new Chart("myChart", {
                     type: "line",
                     data: {
-                    labels: xValues,
-                    datasets: [{
+                        labels: xValues,
+                        datasets: [{
+                        //fill: false,
+                        lineTension: 0.5,
                         backgroundColor: "rgba(0,0,255,1.0)",
                         borderColor: "rgba(0,0,255,0.1)",
                         data: yValues
-                    }]
+                        }]
                     },
                     options: {
-                    legend: {display: false},
-                    elements: {point:{radius: 0}},
-                    scales: {
-                        yAxes: [{ticks: {min: 0, max:6, display:false}}],
-                        xAxes: [{ticks: {display:false}}],
-                    }  
+                        elements: {point:{radius: 0}},
+                        legend: {display: false},
+                        scales: {
+                        yAxes: [{ticks: {min: 0, max:4}}],
+                        xAxes: [{ticks: {display:false}}]
+                        }
                     }
-                });
+                    });
             }).catch(err => {
                 console.log(err.response)
                 data.innerHTML = "Failed to fetch data"
             })
-        }
-
-        function deleteGraph(sensor_id){
-            console.log(sensor_id)
-            card.style.display = 'none'
-            data.innerHTML = ''
-            if(charto instanceof Chart){
-                console.log('chart')
-                charto.destroy()
-                delete charto
-            }
         }
     </script>
 </body>

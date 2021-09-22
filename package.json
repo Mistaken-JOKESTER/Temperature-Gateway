@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nodemon index.js --ignore /clients"
+    "test": "nodemon index.js -e .js,.ejs"
   },
   "author": "",
   "license": "ISC",

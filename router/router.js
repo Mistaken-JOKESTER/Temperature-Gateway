@@ -56,6 +56,7 @@ router.post('/login', redirectHome, async(req,res) => {
         const USER = process.env.ADMIN_UERNAME
         const PASSWORD = process.env.ADMIN_PASS
 
+        console.log(username != USER || password != PASSWORD)
         if (username != USER || password != PASSWORD) {
             req.flash('error_msg', [{
                 msg: "Please provide a valid username and password."
@@ -325,7 +326,7 @@ router.get('/viewSensor/:sensorID', redirectLogin, async (req, res) => {
     }
 })
 
-router.get('/batteryData/:sensorID', redirectLogin, async (req, res) => {
+router.get('/batteryData/:sensorID', async (req, res) => {
     try{
 
         let {sensorID} = req.params
@@ -337,10 +338,9 @@ router.get('/batteryData/:sensorID', redirectLogin, async (req, res) => {
         sensorID = Number(sensorID)
 
         const [resluts, error] = await executeQuerySync(`SELECT battery_voltage bv FROM sensor_data where sensor_id = ${sensorID} LIMIT 50;`)
-        //console.log(resluts, error)
+        console.log(resluts, error)
 
         if(error){
-            req.flash('error_msg', error||[{msg:'Failed to fetch data for download'}])
             return res.status(404).send({msg:'Data not found'})
         }
 
@@ -348,8 +348,7 @@ router.get('/batteryData/:sensorID', redirectLogin, async (req, res) => {
 
     } catch(e) {
         console.log(e)
-        req.flash('error_msg', [{msg:'Internal app error, plesase refer logs or console.'}])
-        res.redirect('/')
+        res.status(404).send({msg:'Internal Error'})
     }
 })
 

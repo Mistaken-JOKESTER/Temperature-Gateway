@@ -44,6 +44,7 @@ const object_4g = {
 
 const rough_sensor = {
     id:null,
+    buttonPressed: 0,
     status:[],
     battery_voltage:null,
     sensor_condition:null,
@@ -75,7 +76,7 @@ const parseData = async (data, ip, port) => {
         counter = await putSensorInfo_data(data, sensor_packet, counter)
     }
 
-    //console.log(utils.inspect(sensor_packet, false, null))
+    console.log(utils.inspect(sensor_packet, false, null))
     await writeLogs({sensor_packet, data})
     insertPacket('4G',sensor_packet, ip, port)
 }
@@ -177,6 +178,7 @@ const putSensorInfo_data = (data, sensor_object,start) => {
             sensor_temp.status.push((temp_status[0]=='0'?"Voltage normal":"Low Voltage"))
             sensor_temp.status.push((temp_status[1]=='0'?"Temperature normal":"Temperature alert"))
             sensor_temp.status.push(temp_status[2]=='0'?"Don't press sesnor button":"Press sensor button")
+            sensor_temp.buttonPressed = temp_status[2]=='0'?0:1
             sensor_temp.status.push(temp_status[3]=='0'?"Sensor ACK disable":"Sensor ACK enable")
             sensor_temp.status.push(temp_status[4]=='0'?"Sensor RTC disable":"Sensor RTC enable")
 

@@ -37,7 +37,7 @@ sensor info
 18 (11000)  low voltage, temperature alert
 e 10 3600/100 = 3.6V
 0 d2 .padStart(16, '0') 
-00 normal , positive 00000011010010 (Number('0b00000011010010'))/10, 21
+00 normal,positive 00000011010010 (Number('0b00000011010010'))/10, 21
 ff ff=> no humidity
 30 
 

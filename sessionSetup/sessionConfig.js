@@ -18,7 +18,7 @@ const sessionConfig= ({
         return genuuid()
     },
     name:'sid',
-    //store: store,
+    store: store,
     resave:false,
     secret: process.env.SESSION_SECRETE,
     resave: false,

@@ -43,6 +43,7 @@ const object_4g = {
 
 const rough_sensor = {
     id:null,
+    buttonPressed: 0,
     status:[],
     battery_voltage:null,
     sensor_condition:null,
@@ -127,6 +128,7 @@ const putSensorInfo_data = (data, sensor_object,start) => {
         sensor_temp.status.push((temp_status[0]=='0'?"Voltage normal":"Low Voltage"))
         sensor_temp.status.push((temp_status[1]=='0'?"Temperature normal":"Temperature alert"))
         sensor_temp.status.push(temp_status[2]=='0'?"Don't Press sesor button":"Press sensor button")
+        sensor_temp.buttonPressed = temp_status[2]=='0'?0:1
         sensor_temp.status.push(temp_status[3]=='0'?"ACK disable":"ACK enable")
         sensor_temp.status.push(temp_status[4]=='0'?"Sensor RTC disable":"Sensor RTC enable")
 
