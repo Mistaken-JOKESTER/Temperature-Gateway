@@ -99,9 +99,9 @@
             <div class="row">
                 <div class="col-1"></div>
                 <div class="col-md-5">
-                    <form class="d-flex" method="POST" action="/serachSensor">
-                        <input class="form-control me-2" type="number" name="sensor_id" placeholder="Sensor ID" aria-label="Search" value="<%= locals.search %>">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="number" placeholder="No. of entries" id="limit" aria-label="Search" value="<%= locals.limit %>" onchange="limiting('')">
+                        <a href="/timeline?limit=50" id="download"><button class="btn btn-outline-success" type="button" id="Download">Limit</button></a>
                     </form>
                 </div>
                 <div class="col-1"></div>
@@ -109,13 +109,13 @@
                     <div>
                         <ul class="pagination">
                           <li class="page-item">
-                            <a class="page-link" href="/sensors" aria-label="Previous">
+                            <a class="page-link" href="/timeline?limit=<%= locals.limit %>" aria-label="Previous">
                               <span aria-hidden="true">&laquo;</span>
                             </a>
                           </li>
-                          <li class="page-item"><a class="page-link" href="/sensors?offset=<%= locals.offset - 50 %>">Previous</a></li>
-                          <li class="page-item"><a class="page-link" href=""><%= locals.offset/50 %></a></li>
-                          <li class="page-item"><a class="page-link" href="/sensors?offset=<%= locals.offset + 50 %>">Next</a></li>
+                          <li class="page-item"><a class="page-link" href="/timeline?offset=<%= locals.offset - locals.limit %>&limit=<%= locals.limit %>">Previous</a></li>
+                          <li class="page-item"><a class="page-link" href=""><%= locals.offset/locals.limit %></a></li>
+                          <li class="page-item"><a class="page-link" href="/timeline?offset=<%= locals.offset + locals.limit %>&limit=<%= locals.limit %>">Next</a></li>
                         </ul>
                     </div>
                 </div>
@@ -138,7 +138,7 @@
                           <th scope="col">Humidity</th>
                           <th scope="col">RSSI</th>
                           <th scope="col">Time</th>
-                          <th scope="col">View</th>
+                          <th scope="col">IMEI</th>
                         </tr>
 
                         <tbody class="small-text">
@@ -169,7 +169,7 @@
                                         <td><%= res.humidity?res.humidity:0 %>%</td>
                                         <td><%= res.rssi %></td>
                                         <td><%= res.time %></td>
-                                        <td><a href="/viewSensor/<%= res.sensor_id %>" class="viewBtn">&#8594;</a></td>
+                                        <td><%= res.gateway_id %></td>
                                     </tr>
                                 <% })%>
                             <% } %>
@@ -198,6 +198,12 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script>
+        const input = document.getElementById('limit')
+        function limiting(){
+            console.log(input.value)
+            document.getElementById('download').href = `/timeline?limit=${input.value}`
+        }
+
         var myModal = new bootstrap.Modal(document.getElementById('myModal'))
         const graph = document.getElementById('graph')
         let charto

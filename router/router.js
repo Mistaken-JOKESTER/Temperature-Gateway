@@ -419,4 +419,52 @@ router.get('/logout', redirectLogin, async(req, res) => {
     }
 })
 
+
+router.get('/timeline', redirectLogin, async (req, res) => {
+    try{
+
+        const error_msg = req.flash('error_msg')
+        const success_msg = req.flash('success_msg')
+
+        let {offset} = req.query
+        if(!offset || (Number(offset)).toString() == 'NaN' || offset < 0){
+            offset = 0
+        }
+
+        let {limit} = req.query
+        if(!limit || (Number(limit)).toString() == 'NaN' || limit < 0){
+            limit = 50
+        }
+
+        offset = Number(offset)
+        limit = Number(limit)
+        console.log(limit, offset)
+        let query = `
+        select sd.temperature, sd.humidity, sd.condition, sd. battery_voltage, sd.time, sd.rssi, sd.buttonPress, sd.sensor_id, gd.gateway_id from sensor_data sd 
+        left join gateway_data gd
+        on gd.id = sd.gateway_data_id 
+        order by sd.id desc limit ${limit} offset ${offset};
+        `
+
+        const [resluts, error] = await executeQuerySync(query)
+        //console.log(resluts, error)
+
+        if(error){
+            error_msg.push(...error)
+        }
+
+        res.render('timeline', {
+            error_msg,
+            success_msg,
+            response:resluts,
+            offset: offset,
+            limit
+        })
+    } catch(e) {
+        console.log(e)
+        req.flash('error_msg', [{msg:'Internal app error, plesase refer logs or console.'}])
+        res.redirect('/')
+    }
+})
+
 module.exports = router

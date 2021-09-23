@@ -190,6 +190,7 @@
                                       <th scope="col">ID</th>
                                       <th scope="col">Battery</th>
                                       <th scope="col">Condition</th>
+                                      <th scope="col">Button Press</th>
                                       <th scope="col">Temperature</th>
                                       <th scope="col">Humidity</th>
                                       <th scope="col">RSSI</th>
@@ -207,6 +208,7 @@
                                                 <td>null</td>
                                                 <td>null</td>
                                                 <td>null</td>
+                                                <td>null</td>
                                             </tr>
                                         <% } else { %>
                                             <% console.log('No') %>
@@ -216,6 +218,7 @@
                                                     <td><%= res.sensor_id %></td>
                                                     <td><%= res.battery_voltage %></td>
                                                     <td><%= res.condition %></td>
+                                                    <td><%= res.buttonPress?'🟢':'🔴' %></td>
                                                     <td><%= res.temperature %></td>
                                                     <td><%= !res.humidity?0:res.humidity %></td>
                                                     <td><%= res.rssi %></td>
