@@ -240,7 +240,7 @@ router.get('/sensors', redirectLogin, async (req, res) => {
         }
 
         const [resluts, error] = await executeQuerySync(query)
-        //console.log(resluts, error)
+        console.log(resluts, error)
 
         if(error){
             error_msg.push(...error)

@@ -230,7 +230,7 @@
                     data: {
                         labels: xValues,
                         datasets: [{
-                        //fill: false,
+                        fill: false,
                         lineTension: 0.5,
                         backgroundColor: "rgba(0,0,255,1.0)",
                         borderColor: "rgba(0,0,255,0.1)",
@@ -238,11 +238,9 @@
                         }]
                     },
                     options: {
-                        elements: {point:{radius: 0}},
                         legend: {display: false},
                         scales: {
                         yAxes: [{ticks: {min: 0, max:4}}],
-                        xAxes: [{ticks: {display:false}}]
                         }
                     }
                     });

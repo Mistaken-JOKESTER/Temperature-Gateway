@@ -64,13 +64,14 @@ const parseData = async (data, ip, port) => {
     counter++
     counter++
 
-    if(data[counter++] != 0 || data[counter++] != 0){
+    counter = counter + 2
+    if(data[counter-2] != 0 || data[counter-1] != 0){
         sensor_packet.status.present = true
         counter = await putStatus_data(data, sensor_packet, counter)
     }
 
-    //console.log(data[counter], data[counter+1])
-    if(data[counter++] != 0 || data[counter++] != 0){
+    counter = counter + 2
+    if(data[counter-2] != 0 || data[counter-1] != 0){
         //console.log(data[counter-2], data[counter-2])
         sensor_packet.sensor_info.present = true
         counter = await putSensorInfo_data(data, sensor_packet, counter)
@@ -123,19 +124,19 @@ const putSensorInfo_data = (data, sensor_object,start) => {
 
         sensor_temp.id = `${data[start++].toString(16).padStart(2, '0')}${data[start++].toString(16).padStart(2, '0')}${data[start++].toString(16).padStart(2, '0')}${data[start++].toString(16).padStart(2, '0')}`
 
-        let temp_status = data[start++].toString(2).padStart( 8, '0')
-        //console.log(temp_status)
-        sensor_temp.status.push((temp_status[0]=='0'?"Voltage normal":"Low Voltage"))
-        sensor_temp.status.push((temp_status[1]=='0'?"Temperature normal":"Temperature alert"))
-        sensor_temp.status.push(temp_status[2]=='0'?"Don't Press sesor button":"Press sensor button")
-        sensor_temp.buttonPressed = temp_status[2]=='0'?0:1
-        sensor_temp.status.push(temp_status[3]=='0'?"ACK disable":"ACK enable")
-        sensor_temp.status.push(temp_status[4]=='0'?"Sensor RTC disable":"Sensor RTC enable")
+        let temp_status = data[start++]
+        console.log("status: ", temp_status, temp_status.toString(16))
+        sensor_temp.status.push((temp_status & 128 ?"Voltage Low":"Voltage Normal"))
+        sensor_temp.status.push((temp_status & 64?"Temperature alert":"Temperature Normal"))
+        sensor_temp.status.push((temp_status & 32?"Press sesnor button":"Don't press sensor button"))
+        sensor_temp.buttonPressed = (temp_status & 32?1:0)
+        sensor_temp.status.push((temp_status & 16?"Sensor ACK enable":"Sensor ACK disable"))
+        sensor_temp.status.push((temp_status & 8?"Sensor RTC enable":"Sensor RTC disable"))
 
         sensor_temp.battery_voltage = (256 * data[start++] + data[start++])/1000
         
         let temp_temprature = (256 * data[start++] + data[start++])
-        sensor_temp.sensor_condition = temp_temprature & (0b1000000000000000)?'normal':'abnormal'
+        sensor_temp.sensor_condition = temp_temprature & (0b1000000000000000)?'abnormal':'normal'
         sensor_temp.temperature = (temp_temprature & (0b010000000000000)?-1 * (temp_temprature & (0b001111111111111)):(temp_temprature & (0b001111111111111)))/10
             
         if(data[start] != 255){

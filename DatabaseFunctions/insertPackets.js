@@ -21,13 +21,15 @@ const insertPacket = async (type, data, ip, port) => {
         let sensor = data.sensor_info.sensors[i];
         let sensor_data_array = []
         
-        sensor_data_array.push(Number(sensor.id), data.sensor_info.type, data.buttonPressed, JSON.stringify(sensor.status), sensor.battery_voltage, sensor.sensor_condition, sensor.temperature, sensor.humidity, Number(sensor.RSSI), sensor.time, gateway_data_id,Number(data.IMEI))
+        console.log("my : ", sensor.buttonPressed)
+        sensor_data_array.push(Number(sensor.id), data.sensor_info.type, sensor.buttonPressed, JSON.stringify(sensor.status), sensor.battery_voltage, sensor.sensor_condition, sensor.temperature, sensor.humidity, Number(sensor.RSSI), sensor.time, gateway_data_id,Number(data.IMEI))
         const [result1, error] = await DbQuerySync(insertSensorQuery, sensor_data_array)
         if(error){
             //save this to logs
             //***************** */
             console.log({error:"error"})
         }
+        console.log(result1)
     }
 }
 
