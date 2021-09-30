@@ -1,5 +1,4 @@
 const executeQuerySync = require('../DatabaseFunctions/executeDBquery')
-
 const router = require('express').Router()
 
 const redirectHome = (req, res, next) => {
@@ -192,7 +191,8 @@ router.get('/viewDevice/:IMEI', redirectLogin, async (req, res) => {
             gateway:resluts[1][0],
             gateway_data: resluts[2][0],
             lsb:resluts[1][0].lsb_present?resluts[3][0]:{},
-            status:resluts[1][0].status_present?resluts[4][0]:{}
+            status:resluts[1][0].status_present?resluts[4][0]:{},
+            isTelsta:true
         })
     } catch(e) {
         console.log(e)
@@ -461,6 +461,16 @@ router.get('/timeline', redirectLogin, async (req, res) => {
             limit
         })
     } catch(e) {
+        console.log(e)
+        req.flash('error_msg', [{msg:'Internal app error, plesase refer logs or console.'}])
+        res.redirect('/')
+    }
+})
+
+router.get('/telstra/:IMEI', redirectLogin, async (req, res) => {
+    try{
+        
+    } catch (e) {
         console.log(e)
         req.flash('error_msg', [{msg:'Internal app error, plesase refer logs or console.'}])
         res.redirect('/')

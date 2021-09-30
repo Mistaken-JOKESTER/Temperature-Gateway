@@ -17,6 +17,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/timeline">Timeline</a>
                 </li>
+                <% if(locals.isTelsta) { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/telstra/<%= gateway.IMEI %>"><img src="https://dev.telstra.com/sites/default/files/favicon.ico" alt="Telstra API" style="width: 20px;"></a>
+                    </li>
+                <% } %>
+                
             </ul>
             <form class="d-flex">
                 <a href="/logout" style="text-decoration: none; color: white;"><button type="button"
