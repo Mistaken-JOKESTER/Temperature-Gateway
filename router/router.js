@@ -1,5 +1,20 @@
 const executeQuerySync = require('../DatabaseFunctions/executeDBquery')
 const router = require('express').Router()
+const notifier = require('node-notifier')
+const open = require('open')
+
+const BASICURL = process.env.BASICURL
+
+const notify = (url) => {
+    notifier.notify({
+        title: 'Notification',
+        message: 'Hello World',
+        sound: true,
+        wait: true
+    }, function () {
+        open(url);
+    })
+}
 
 const redirectHome = (req, res, next) => {
     try {

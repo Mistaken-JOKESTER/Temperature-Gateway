@@ -117,15 +117,6 @@ var open = require('open');
 app.get('/sensro_msg/notify', async (req, res) => {
   try {
     // String
-    notifier.notify({
-      title: 'Notification',
-      message: 'Hello World',
-      sound: true,
-      wait: true
-    }, function () {
-      open('https://www.google.com');
-    })
-
     res.send('yes')
   } catch (e) {
     console.log(e)
