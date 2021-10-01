@@ -5,7 +5,7 @@ const {appServer} = require('./app');
 
 //server for user
 appServer.listen(5000, () => {
-    console.log("APP Pakcets on 3000")
+    console.log("APP Pakcets on 5000")
 })
 
 // //server for 4g packet

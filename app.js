@@ -112,7 +112,7 @@ io.on('connection', (socket) => {
 app.post('/sensro_msg/notify', async (req, res) => {
   try {
     console.log(req.body)
-    res.send(1)
+    res.send({status:1})
     res.end()
   } catch (e) {
     console.log(e)
