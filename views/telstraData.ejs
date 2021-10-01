@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature</title>
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+            <path
+                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+        </symbol>
+        <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+            <path
+                d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+        </symbol>
+        <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+            <path
+                d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+        </symbol>
+    </svg>
+
+    <style>
+        * {
+            font-family: sans-serif;
+        }
+
+        html{
+            background-color: rgb(44, 44, 44);
+        }
+
+        .small-text{
+            font-size: 0.9rem;
+        }
+        main {
+            padding-top: 80px;
+            background-color: rgb(32, 32, 32);
+            color: white;
+        }
+        .viewBtn{
+            text-decoration: none; 
+            border: none; border-radius: 5px;
+            background-color: rgb(172, 229, 255);
+            padding: 3px 5px 4px;
+        }
+        .viewBtn:hover{
+            color: white;
+            background-color: rgb(53, 124, 156);
+        }
+
+        .hr{
+            width: 90%;
+            border: solid 2px white;
+            border-radius: 5px;
+            color: white;
+            background-color: white;
+            height: 5px;
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <%- include('./partials/navbar') %>
+
+    <main>
+        <%- include('./partials/notify') %>
+
+        <div class="container-fluid heading" style="margin-bottom: 80px;">
+            <div class="row m-5">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                    <div class="col-12 display-3 flex">
+                        <%= locals.IMEI %>
+                    </div>
+                    <div class="col-md-12 display-6">
+                        LTE 4G Gateway
+                    </div>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+        </div>
+
+        
+
+        <div class="mb-3"></div>
+
+        <div class="container-fluid text-center">
+            <div class="row m-5 text-center">
+                <div class="col-12 h1">Telstra API Data</div>
+                <div class="hr mb-3"></div>
+                <div class="col-12 m-3">
+                    <div class="row text-start">
+                        <div class="col-md-4 mb-4">
+                            <div class="col-12 small">IMSI</div>
+                            <div class="col-12 lead"><%= sim.imsi %></div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="col-12 small">CIDN</div>
+                            <div class="col-12 lead"><%= sim.cidn %></div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="col-12 small">Account Number</div>
+                            <div class="col-12 lead"><%= sim.accountNumber %></div>
+                        </div>
+        
+                        <div class="col-md-4 mb-4">
+                            <div class="col-12 small">MSISDN</div>
+                            <div class="col-12 lead"><%= sim.msisdn %></div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="col-12 small">ICCID</div>
+                            <div class="col-12 lead"><%= sim.iccid %></div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="col-12 small">Serial No.</div>
+                            <div class="col-12 lead"><%= sim.serialNumber %></div>
+                        </div>
+                        <% if(sim.serviceInstanceId) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Service Instance ID</div>
+                                <div class="col-12 lead"><%= sim.serviceInstanceId %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.serviceStatus) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Service Status</div>
+                                <div class="col-12 lead"><%= sim.serviceStatus %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.createdAt) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Created At</div>
+                                <div class="col-12 lead"><%= sim.createdAt %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.updatedAt) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Updated At</div>
+                                <div class="col-12 lead"><%= sim.updatedAt %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.basePlanCode) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Base Plan Code</div>
+                                <div class="col-12 lead"><%= sim.basePlanCode %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.basePlanDescription) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Base Plan Discription</div>
+                                <div class="col-12 lead"><%= sim.basePlanDescription %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.basePlanAllocation) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Base Plan Allocation</div>
+                                <div class="col-12 lead"><%= sim.basePlanAllocation %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.bonusPlanCost) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Bonus Plan Cost</div>
+                                <div class="col-12 lead"><%= sim.bonusPlanCost %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.bonusPlanCode) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Bonus Plan Code</div>
+                                <div class="col-12 lead"><%= sim.bonusPlanCode %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.bonusPlanDescription) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Bonus Plan Discription</div>
+                                <div class="col-12 lead"><%= sim.bonusPlanDescription %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.bonusPlanAllocation) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Bonus Plan Allocation</div>
+                                <div class="col-12 lead"><%= sim.bonusPlanAllocation %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.bonusPlanCost) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Bonus Plan Cost</div>
+                                <div class="col-12 lead"><%= sim.bonusPlanCost %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.subscriptionNumber) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Subscription Number</div>
+                                <div class="col-12 lead"><%= sim.subscriptionNumber %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.ipAddress) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">IP Address</div>
+                                <div class="col-12 lead"><%= sim.ipAddress %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.inSession) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">In Session</div>
+                                <div class="col-12 lead"><%= sim.inSession %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.totalData) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Total Data</div>
+                                <div class="col-12 lead"><%= sim.totalData %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.uploadData) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Upload Data</div>
+                                <div class="col-12 lead"><%= sim.uploadData %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.downloadData) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Download Data</div>
+                                <div class="col-12 lead"><%= sim.downloadData %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.dataCallCount) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Data Call Count</div>
+                                <div class="col-12 lead"><%= sim.dataCallCount %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.incomingVoiceCallCount) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Incoming Voice Call Count</div>
+                                <div class="col-12 lead"><%= sim.incomingVoiceCallCount %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.incomingVoiceCallDuration) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Incoming Voice Call Duration</div>
+                                <div class="col-12 lead"><%= sim.incomingVoiceCallDuration %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.outgoingVoiceCallCount) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Outgoing Voice Call Count</div>
+                                <div class="col-12 lead"><%= sim.outgoingVoiceCallCount %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.outgoingVoiceCallDuration) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Outgoing Voice Call Duration</div>
+                                <div class="col-12 lead"><%= sim.outgoingVoiceCallDuration %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.incomingSmsCount) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Incoming Sms Count</div>
+                                <div class="col-12 lead"><%= sim.incomingSmsCount %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.outgoingSmsCount) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Outgoing Sms Count</div>
+                                <div class="col-12 lead"><%= sim.outgoingSmsCount %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.cellName) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Cell Name</div>
+                                <div class="col-12 lead"><%= sim.cellName %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.cellLatitude) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Cell Latitude</div>
+                                <div class="col-12 lead"><%= sim.cellLatitude %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.cellLongitude) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Cell Longitude</div>
+                                <div class="col-12 lead"><%= sim.cellLongitude %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.accountName) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Account Name</div>
+                                <div class="col-12 lead"><%= sim.accountName %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.sourceSystem) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Source System</div>
+                                <div class="col-12 lead"><%= sim.sourceSystem %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.nextBillDate) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Next Bill Date</div>
+                                <div class="col-12 lead"><%= sim.nextBillDate %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.lastBillDate) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Last Bill Date</div>
+                                <div class="col-12 lead"><%= sim.lastBillDate %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.planType) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Plan Type</div>
+                                <div class="col-12 lead"><%= sim.planType %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.imei) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">IMEI</div>
+                                <div class="col-12 lead"><%= sim.imei %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.imeiSv) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">IMEI SV</div>
+                                <div class="col-12 lead"><%= sim.imeiSv %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.lastConnected) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Last Connected</div>
+                                <div class="col-12 lead"><%= sim.lastConnected %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.totalDataAllocation) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">Total Data Allocation</div>
+                                <div class="col-12 lead"><%= sim.totalDataAllocation %></div>
+                            </div>
+                        <% } %>
+                        <% if(sim.totalDataAllocation) { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="col-12 small">totalDataAllocation</div>
+                                <div class="col-12 lead"><%= sim.totalDataAllocation %></div>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="/js/bootstrap.min.js"></script>
+</body>
+
+</html>

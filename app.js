@@ -84,45 +84,42 @@ app.use('/', adminRouter)
 
 const server = http.createServer(app);
 
-// const io = new Server(server, {
-//   cors: {
-//     origin: "http://localhost:5000",
-//     methods: ["GET", "POST"],
-//     path: '/admin/sensro_msg/notify'
-//   }
-// })
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5000",
+    methods: ["GET", "POST"],
+    path: '/admin/sensro_msg/notify'
+  }
+})
 
-// io.on('connection', (socket) => {
-//   console.log('a user connected');
+io.on('connection', (socket) => {
+  console.log('a user connected');
 
-//   socket.on('disconnect', () => {
-//     console.log('user disconnected')
-//   })
+  socket.on('disconnect', () => {
+    console.log('user disconnected')
+  })
 
-//   socket.on('msg_clinet', () => {
-//     console.log('msg from client')
-//   })
+  socket.on('msg_clinet', () => {
+    console.log('msg from client')
+  })
 
-//   io.on('custome_event', (msg) => {
-//     console.log("in io", msg)
-//   })
-// })
+  io.on('custome_event', (msg) => {
+    console.log("in io", msg)
+  })
+})
 
-// io.on('custome_event', (msg) => {
-//   console.log("out io", msg)
-// })
 
-const notifier = require('node-notifier');
-var open = require('open');
-app.get('/sensro_msg/notify', async (req, res) => {
+app.post('/sensro_msg/notify', async (req, res) => {
   try {
-    // String
-    res.send('yes')
+    console.log(req.body)
+    res.send(1)
+    res.end()
   } catch (e) {
     console.log(e)
     res.send('error')
   }
 })
+
 
 //server for user
 module.exports = {
