@@ -41,7 +41,7 @@ const getToken = () => {
             },
             data:`grant_type=client_credentials&client_id=${encodeURIComponent($CLIENT_KEY)}&client_secret=${$CLIENT_SECRET}&scope=NSMS`
         }).then(async res => {
-            console.log(res.data)
+            //console.log(res.data)
             const [status, result] = await writeToken(res.data)
             if(status == 0){
                 resolve([0, result])
@@ -73,26 +73,20 @@ const TelstraAPI = async (url, data, type, head) =>{
                     ...head
                 }
             }).then(async res => {
-                console.log(res.data)
+                //console.log(res.data)
                 resolve([1, res.data])
             }).catch(err => {
                 console.log(err.response.data || err.response)
                 if(err.response){
                     if(err.response.status = 401){
                         if(err.response.data.message){
-                            resolve([2, [{msg:err.response.data.message}]])
+                            resolve([0, [{msg:err.response.data.message}]])
                         } else if(err.response.data.fault){
-                            resolve([2, [{msg:err.response.data.fault.faultstring}]])
+                            resolve([0, [{msg:err.response.data.fault.faultstring}]])
                         } else {
-                            resolve([2, [{msg:"API call failed"}]])
+                            resolve([0, [{msg:"API call failed"}]])
                         }
                     }
-                }
-                
-                if(err.response.data.message){
-                    resolve([0, [{msg:err.response.data.message}]])
-                } else if(err.response.data.fault){
-                    resolve([0, [{msg:err.response.data.fault.faultstring}]])
                 } else {
                     resolve([0, [{msg:"API call failed"}]])
                 }
@@ -112,33 +106,27 @@ const TelstraAPI = async (url, data, type, head) =>{
                 },
                 data:data
             }).then(res => {
-                console.log(res.data)
+                //console.log(res.data)
                 resolve([1, res.data])
             }).catch(err => {
-                console.log(err.response || err)
+                console.log(err.response.data || err.response)
                 if(err.response){
                     if(err.response.status = 401){
                         if(err.response.data.message){
-                            resolve([2, [{msg:err.response.data.message}]])
+                            resolve([0, [{msg:err.response.data.message}]])
                         } else if(err.response.data.fault){
-                            resolve([2, [{msg:err.response.data.fault.faultstring}]])
+                            resolve([0, [{msg:err.response.data.fault.faultstring}]])
                         } else {
-                            resolve([2, [{msg:"API call failed"}]])
+                            resolve([0, [{msg:"API call failed"}]])
                         }
                     }
-                }
-                
-                if(err.response.data.message){
-                    resolve([0, [{msg:err.response.data.message}]])
-                } else if(err.response.data.fault){
-                    resolve([0, [{msg:err.response.data.fault.faultstring}]])
                 } else {
                     resolve([0, [{msg:"API call failed"}]])
                 }
             })
         })
     } else {
-        return [0, 'Invalid request Type']
+        return [0, [{msg:'Invalid request Type'}]]
     }
 }
 

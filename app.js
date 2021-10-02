@@ -10,11 +10,13 @@ const cookieParser = require('cookie-parser')
 const sessionConfig = require('./sessionSetup/sessionConfig')
 const flash = require('connect-flash')
 const path = require('path')
+const executeQuerySync = require('./DatabaseFunctions/executeDBquery')
 const {
   Server
 } = require("socket.io");
 
 const adminRouter = require('./router/router')
+const smsRouter = require('./router/smsRouter')
 
 app.use(cors())
 //Json parser for reading post request data
@@ -81,6 +83,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/', adminRouter)
+app.use('/', smsRouter)
 
 const server = http.createServer(app);
 
@@ -111,9 +114,25 @@ io.on('connection', (socket) => {
 
 app.post('/sensro_msg/notify', async (req, res) => {
   try {
-    console.log(req.body)
+    const {to, from, body, sentTimestamp, messageId, userMsgRef} = req.body
+    console.log(req.body)/* {
+      to: '+61472881148',
+      from: '+61477280939',
+      body: 'Receive:Set Err\n*123123,001,123123#',
+      sentTimestamp: '2021-10-03T00:07:23+10:00',
+      messageId: 'QFRO3ApiA0010298537'
+    } */
     res.send({status:1})
-    res.end()
+    
+    const [response_data, response_error] = [1, null] //await executeQuerySync('CALL add_response(?,?,?,?);', [messageId, from, body, sentTimestamp.split('+')[0]])
+    console.log(response_data, response_error)
+    if(response_error){
+      console.log("DB ERROR")
+      io.emit('unstored_msg', {response: body, from:from})
+    } else {
+      io.emit('stored_msg', {response: body, from:from})
+    }
+    
   } catch (e) {
     console.log(e)
     res.send('error')

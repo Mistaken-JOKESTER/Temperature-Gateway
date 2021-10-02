@@ -69,6 +69,7 @@
 
     <main>
         <%- include('./partials/notify') %>
+        <%- include('./partials/smsresponse') %>
 
         <div class="container-fluid heading" style="margin-bottom: 80px;">
             <div class="row m-5">
@@ -190,6 +191,8 @@
         </div>
     </main>
     <script src="/js/bootstrap.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/sockets.js"></script>
 </body>
 
 </html>

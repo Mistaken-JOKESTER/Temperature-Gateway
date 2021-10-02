@@ -1,44 +1,7 @@
 const executeQuerySync = require('../DatabaseFunctions/executeDBquery')
-const { getToken, TelstraAPI } = require('../telstra/makeRequest')
+const { redirectLogin, redirectHome } = require('./redirects')
+const {getSimData} = require('../telstra/getSIMData')
 const router = require('express').Router()
-
-const redirectHome = (req, res, next) => {
-    try {
-        if (req.session.type == "admin" && req.session.logged_in) {
-            return res.redirect('/dashboard')
-        }
-
-        next()
-    } catch (e) {
-        console.log(e)
-        req.flash('error_msg', [{
-            msg: "Inter website Error."
-        }])
-        res.redirect('/')
-    }
-}
-
-const redirectLogin = async (req, res, next) => {
-    try {
-        if (req.session.type != "admin" || !req.session.logged_in) {
-            req.session.type = null
-            req.session.logged_in = null
-
-            req.flash('error_msg', [{
-                msg: "You are unautharized, please login."
-            }])
-            return res.redirect('/')
-        }
-
-        next()
-    } catch (e) {
-        console.log(e)
-        req.flash('error_msg', [{
-            msg: "Internal app error."
-        }])
-        res.redirect('/')
-    }
-}
 
 router.post('/login', redirectHome, async(req,res) => {
     try{
@@ -241,7 +204,7 @@ router.get('/sensors', redirectLogin, async (req, res) => {
         }
 
         const [resluts, error] = await executeQuerySync(query)
-        console.log(resluts, error)
+        //console.log(resluts, error)
 
         if(error){
             error_msg.push(...error)
@@ -481,106 +444,24 @@ router.get('/telstra/:IMEI', redirectLogin, async (req, res) => {
         }
 
         IMEI = Number(IMEI)
+
         const [exesist, error] = await executeQuerySync(`select IMEI from gateway where IMEI = ?;`, [IMEI])
-        console.log(exesist, error)
+        //console.log(exesist, error)
 
         if(error || !exesist.length){
             req.flash('error_msg', error||[{msg:'Device not found'}])
             return res.redirect('/dashboard')
         }
         
-        const request_url = `https://tapi.telstra.com/v1/iot-connectivity/v2/services?imei=${IMEI}`
-        const [req_status, req_result] = [1, {
-            "count": 1,
-            "sims": [
-                {
-                    "imsi": "505013539187060",
-                    "cidn": "3891510879",
-                    "accountNumber": "4720718982",
-                    "msisdn": "477280939",
-                    "iccid": "89610182000964852496",
-                    "serialNumber": "8200096485246",
-                    "serviceInstanceId": null,
-                    "serviceStatus": "AC",
-                    "createdAt": "2021-07-26T07:39:48.979Z",
-                    "updatedAt": "2021-09-30T21:55:53.253Z",
-                    "deletedAt": null,
-                    "basePlanCode": "IOTSH5MB",
-                    "basePlanDescription": "Telstra IOT Shared Data 5MB",
-                    "basePlanAllocation": "5",
-                    "basePlanCost": null,
-                    "bonusPlanCode": null,
-                    "bonusPlanDescription": null,
-                    "bonusPlanAllocation": null,
-                    "bonusPlanCost": null,
-                    "subscriptionNumber": null,
-                    "ipAddress": "22.220.7.155",
-                    "inSession": true,
-                    "totalData": "2882696",
-                    "uploadData": "2507023",
-                    "downloadData": "375673",
-                    "dataCallCount": 6651,
-                    "incomingVoiceCallCount": 0,
-                    "incomingVoiceCallDuration": "0",
-                    "outgoingVoiceCallCount": 0,
-                    "outgoingVoiceCallDuration": "0",
-                    "incomingSmsCount": 13,
-                    "outgoingSmsCount": 0,
-                    "cellName": "SGWEAM1",
-                    "cellLatitude": "-27.464",
-                    "cellLongitude": "153.021",
-                    "accountName": null,
-                    "sourceSystem": "MICA",
-                    "nextBillDate": "2021-10-14T00:00:00.000Z",
-                    "lastBillDate": "2021-09-14T00:00:00.000Z",
-                    "customFieldsValues": {
-                        "2ce6f66c-d565-4b30-83fa-b0fa8230d29d": "Marcus Testing"
-                    },
-                    "planType": "SHARED",
-                    "imei": "863427040095946",
-                    "imeiSv": "8634270400959400",
-                    "lastConnected": "2021-10-01T11:04:14.000Z",
-                    "totalDataAllocation": "5",
-                    "blockStatus": null,
-                    "groups": [
-                        {
-                            "id": "6d069067-e7f2-4497-ae52-743a9ecab19a",
-                            "name": "SpareSIMs"
-                        },
-                        {
-                            "id": "eb66d277-fc80-456f-b97a-f75e3dc13f23",
-                            "name": "5 MB Account"
-                        }
-                    ]
-                }
-            ]
-        }]
-        //uncomment when final
-        // let [req_status, req_result] = await TelstraAPI(request_url, {}, 'GET', {})
-        // console.log("response", {req_status, req_result})
-
-        // if(req_status == 2) {
-        //     const [status, result] = await getToken()
-        //     if(status == 0){
-        //         req.flash('error_msg', result)
-        //         return res.redirect('/dashboard')
-        //     }
-
-        //     [req_status, req_result] = await TelstraAPI(request_url, {}, 'GET', {})
-        //     console.log("refresh response ", {req_status, req_result})
-        //     if(req_status !== 1){
-        //         req.flash('error_msg', req_result)
-        //         return res.redirect('/dashboard')
-        //     }
-
-        // } else if(req_status == 0){
-        //     req.flash('error_msg', req_result)
-        //     return res.redirect('/dashboard')
-        // }
+        const [req_status, req_result] = await getSimData(IMEI)
+        if(req_status == 0){
+            req.flash('error_msg', req_result)
+            return res.redirect(`/viewDevice/${IMEI}`)
+        }
 
         res.render('telstraData', {
             IMEI,
-            sim:req_result.sims[0],
+            sim:req_result,
             error_msg,
             success_msg
         })
@@ -591,37 +472,77 @@ router.get('/telstra/:IMEI', redirectLogin, async (req, res) => {
     }
 })
 
-// router.get('/sms/:IMEI', redirectLogin, async (req, res) => {
-//     try{
-//         const error_msg = req.flash('error_msg')
-//         const success_msg = req.flash('success_msg')
+router.get('/sms/:IMEI', redirectLogin, async (req, res) => {
+    try{
+        const error_msg = req.flash('error_msg')
+        const success_msg = req.flash('success_msg')
 
-//         const {IMEI} = req.params
-//         if(!IMEI || (Number(IMEI)).toString() == 'NaN' || IMEI < 0){
-//             req.flash('error_msg', [{msg:"Device not found"}])
-//             res.redirect('/dashboard')
-//         }
+        let {IMEI} = req.params
+        if(!IMEI || (Number(IMEI)).toString() == 'NaN' || IMEI < 0){
+            req.flash('error_msg', [{msg:"Device not found"}])
+            return res.redirect('/dashboard')
+        }
 
-//         IMEI = Number(IMEI)
-//         const [exesist, error] = await executeQuerySync(`select IMEI from gateway where IMEI = ?;`, [IMEI])
-//         console.log(exesist, error)
+        IMEI = Number(IMEI)
+        console.log(IMEI)
 
-//         if(error || !exesist.length){
-//             req.flash('error_msg', error||[{msg:'Device not found'}])
-//             return res.redirect('/dashboard')
-//         }
+        let {offset} = req.query
+        if(!offset || (Number(offset)).toString() == 'NaN' || offset < 0){
+            offset = 0
+        }
+        offset = Number(offset)
 
-//         res.render('telstraSMS', {
-//             IMEI,
-//             sim:req_result.sims[0],
-//             error_msg,
-//             success_msg
-//         })
-//     } catch (e) {
-//         console.log(e)
-//         req.flash('error_msg', [{msg:'Internal app error, plesase refer logs or console.'}])
-//         res.redirect('/')
-//     }
-// })
+        const [exesist, error] = await executeQuerySync(`select IMEI from gateway where IMEI = ?; select * from messages where gateway_id = ? order by id desc limit 50 offset ?;`, [IMEI, IMEI, offset])
+        //console.log(exesist, error)
+
+        if(error || !exesist[0].length){
+            req.flash('error_msg', error||[{msg:'Device not found'}])
+            return res.redirect('/dashboard')
+        }
+
+        res.render('telstraSMS', {
+            IMEI,
+            messages:exesist[1],
+            error_msg,
+            success_msg,
+            offset
+        })
+    } catch (e) {
+        console.log(e)
+        req.flash('error_msg', [{msg:'Internal app error, plesase refer logs or console.'}])
+        res.redirect('/')
+    }
+})
+
+router.get('/responses', redirectLogin, async (req, res) => {
+    try{
+        const error_msg = req.flash('error_msg')
+        const success_msg = req.flash('success_msg')
+
+        let {offset} = req.query
+        if(!offset || (Number(offset)).toString() == 'NaN' || offset < 0){
+            offset = 0
+        }
+        offset = Number(offset)
+
+        const [exesist, error] = await executeQuerySync(`select * from responses order by id desc limit 50 offset ?;`, [offset])
+
+        if(error){
+            req.flash('error_msg', error||[{msg:'Device not found'}])
+            return res.redirect('/dashboard')
+        }
+
+        res.render('responses', {
+            messages:exesist,
+            error_msg,
+            success_msg,
+            offset
+        })
+    } catch (e) {
+        console.log(e)
+        req.flash('error_msg', [{msg:'Internal app error, plesase refer logs or console.'}])
+        res.redirect('/')
+    }
+})
 
 module.exports = router

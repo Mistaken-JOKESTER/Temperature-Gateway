@@ -70,6 +70,7 @@
 
     <main>
         <%- include('./partials/notify') %>
+        <%- include('./partials/smsresponse') %>
 
         <div class="container-fluid heading text-center" style="margin-bottom: 80px;">
             <div class="row m-5">
@@ -243,6 +244,8 @@
             document.getElementById('download').href = `/dataDownload/${sensor_id}?limit=${input.value}`
         }
     </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/sockets.js"></script>
 </body>
 
 </html>

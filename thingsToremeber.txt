@@ -1,0 +1,2 @@
+sensors ejs - batter url
+socket js client url

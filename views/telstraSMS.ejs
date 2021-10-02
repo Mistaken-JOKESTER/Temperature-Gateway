@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature</title>
+
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+            <path
+                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+        </symbol>
+        <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+            <path
+                d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+        </symbol>
+        <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+            <path
+                d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+        </symbol>
+    </svg>
+
+    <style>
+        * {
+            font-family: sans-serif;
+        }
+
+        html{
+            background-color: rgb(44, 44, 44);
+        }
+
+        .small-text{
+            font-size: 0.9rem;
+        }
+        main {
+            padding-top: 80px;
+            background-color: rgb(32, 32, 32);
+            color: white;
+        }
+        .viewBtn{
+            text-decoration: none; 
+            border: none; border-radius: 5px;
+            background-color: rgb(172, 229, 255);
+            padding: 3px 5px 4px;
+        }
+        .viewBtn:hover{
+            color: white;
+            background-color: rgb(53, 124, 156);
+        }
+
+        .hr{
+            width: 90%;
+            border: solid 2px white;
+            border-radius: 5px;
+            color: white;
+            background-color: white;
+            height: 5px;
+            margin: auto;
+        }
+        .smooth{
+            transition: 1s ease-in;
+        }
+    </style>
+</head>
+
+<body>
+
+    <%- include('./partials/navbar') %>
+
+    <main>
+        <%- include('./partials/notify') %>
+        <%- include('./partials/smsresponse') %>
+
+        <div class="container-fluid heading text-center" style="margin-bottom: 80px;">
+            <div class="row mb-3">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                    <div class="col-12 display-3 flex">
+                        <%= locals.IMEI %>
+                    </div>
+                    <div class="col-md-12 display-6">
+                        4G LTE Messaging
+                    </div>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+        </div>
+        
+        <hr class="hr mb-5">
+
+        <div class="continer-fluid mb-2 p-3">
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <div class="lead mb-2">
+                        Message Type
+                    </div>
+                    <select class="form-select" aria-label="Default select example" id='formSelect'>
+                        <option value="1">Modify user passowrd</option>
+                        <option value="2">Extension setting</option>
+                        <option value="3">Change band</option>
+                        <option value="4">Set APN, username, password</option>
+                        <option value="5">Set IP and PORT</option>
+                        <option value="6">Set HTTP proxy server</option>
+                        <option value="7">Read IMEI Number</option>
+                        <option value="8">Issue Lora Sensor Commands</option>
+                        <option value="9">Initialize the machine</option>
+                        <option value="10">Reboot Now</option>
+                    </select>
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>
+
+        
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4 smooth">
+                    <div class="" id="Form1">
+                        <form action="/sms/modifyPass/<%= locals.IMEI %>" method="POST">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-success text-light" id="basic-addon1">Old Password</span>
+                                        <input type="text" class="form-control" placeholder="oldPassword" name="oldPassword" aria-label="oldPassword" aria-describedby="basic-addon1"  minlength="6" maxlength="6" title="Password must have 6 digit and numeric only" pattern="([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])" value="000000">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-success text-light" id="basic-addon1">New Password</span>
+                                        <input type="text" class="form-control" placeholder="newPassword" name="newPassword" aria-label="newPassword" aria-describedby="basic-addon1"  minlength="6" maxlength="6" title="Password must have 6 digit and numeric only" pattern="([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])" value="000000">
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-3">
+                                    <button type="submit" class="btn btn-primary">Send</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+            
+                    <div class="" id="Form2" style="display: none;">
+                        <form action="/sms/extensionSetting/<%= locals.IMEI %>" method="POST">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-success text-light" id="basic-addon1">Password</span>
+                                        <input type="text" class="form-control" placeholder="password" name="password" aria-label="password" aria-describedby="basic-addon1" minlength="6" maxlength="6" title="Password must have 6 digit and numeric only" pattern="([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])" value="000000">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value='1' value="" id="flexCheckDefault" name="sadf">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                          Sensor ACK downward function
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value='1' value="" id="flexCheckDefault" name="casf">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                          Close all SMS function
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value='1' value="" id="flexCheckDefault" name="saf">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                          Server ACK function
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-3">
+                                    <button type="submit" class="btn btn-primary">Send</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+            
+                    <div class="" id="Form3" style="display: none;">
+                        <form action="/sms/changeBand/<%= locals.IMEI %>" method="POST">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-success text-light" id="basic-addon1">Password</span>
+                                        <input type="text" class="form-control" placeholder="password" name="password" aria-label="password" aria-describedby="basic-addon1" minlength="6" maxlength="6" title="Password must have 6 digit and numeric only" pattern="([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])" value="000000">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <select class="form-select" aria-label="Default select example" name="band">
+                                        <option value="0">900/1800</option>
+                                        <option value="1">850/1900</option>
+                                        <option value="2">Auto Selection</option>
+                                        <option value="3">default</option>
+                                      </select>
+                                </div>
+                                <div class="col-12 mt-3">
+                                    <button type="submit" class="btn btn-primary">Send</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+            
+                    <div class="" id="Form4" style="display: none;">
+                        <form action="/sms/setAUP/<%= locals.IMEI %>" method="POST">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-success text-light" id="basic-addon1">Password</span>
+                                        <input type="text" class="form-control" placeholder="Gateway Pass" name="password" aria-label="password" aria-describedby="basic-addon1" minlength="6" maxlength="6" title="Password must have 6 digit and numeric only" pattern="([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])" value="000000">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1">APN</span>
+                                        <input type="text" class="form-control" placeholder="APN" name="apn" aria-label="apn" aria-describedby="basic-addon1" maxlength="28"> 
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1">Username</span>
+                                        <input type="text" class="form-control" placeholder="Username" name="username" aria-label="username" aria-describedby="basic-addon1" maxlength="28">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-success text-light" id="basic-addon1">Password</span>
+                                        <input type="text" class="form-control" placeholder="Password" name="pass" aria-label="pass" aria-describedby="basic-addon1" maxlength="28">
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-3">
+                                    <button type="submit" class="btn btn-primary">Send</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+            
+                    <div class="" id="Form5" style="display: none;">
+                        <form action="/sms/setIPP/<%= locals.IMEI %>" method="POST">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-success text-light" id="basic-addon1">Password</span>
+                                        <input type="text" class="form-control" placeholder="password" name="password" aria-label="password" aria-describedby="basic-addon1" minlength="6" maxlength="6" title="Password must have 6 digit and numeric only" pattern="([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])" value="000000">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1">IP Address</span>
+                                        <input type="text" class="form-control" placeholder="IP Address" name="ip" title="IP must of form XXX.XXX.XXX.XXX" aria-label="password" aria-describedby="basic-addon1" pattern="^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$">
+                                    </div>  
+                                </div>
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1">PORT</span>
+                                        <input type="number" class="form-control" placeholder="PORT" name="port" aria-label="password" aria-describedby="basic-addon1">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value='1' value="" id="flexCheckDefault" name="x">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                          0-IP/1-Domain Name
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary">Send</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+            
+                    <div class="" id="Form6" style="display: none;">
+                        <form action="/sms/sethps/<%= locals.IMEI %>" method="POST">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-success text-light" id="basic-addon1">Password</span>
+                                        <input type="text" class="form-control" placeholder="password" name="password" aria-label="password" aria-describedby="basic-addon1" minlength="6" maxlength="6" title="Password must have 6 digit and numeric only" pattern="([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])" value="000000">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1">IP Address</span>
+                                        <input type="text" class="form-control" placeholder="IP Address" name="ip" title="IP must of form XXX.XXX.XXX.XXX" aria-label="password" aria-describedby="basic-addon1" pattern="^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$">
+                                    </div>  
+                                </div>
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1">PORT</span>
+                                        <input type="number" class="form-control" placeholder="PORT" name="port" aria-label="password" aria-describedby="basic-addon1">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value='1' value="" id="flexCheckDefault" name="x">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                          0-IP/1-Domain Name
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary">Send</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+            
+                    <div class="" id="Form7" style="display: none;">
+                        <form action="/sms/readIMEI/<%= locals.IMEI %>" method="POST">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-success text-light" id="basic-addon1">Password</span>
+                                        <input type="text" class="form-control" placeholder="password" name="password" aria-label="password" aria-describedby="basic-addon1" minlength="6" maxlength="6" title="Password must have 6 digit and numeric only" pattern="([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])" value="000000">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary">Send</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+            
+                    <div class="" id="Form8" style="display: none;">
+                        <form action="/sms/sensorCommand/<%= locals.IMEI %>" method="POST">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-success text-light" id="basic-addon1">Password</span>
+                                        <input type="text" class="form-control" placeholder="password" name="password" aria-label="password" aria-describedby="basic-addon1" minlength="6" maxlength="6" title="Password must have 6 digit and numeric only" pattern="([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])" value="000000">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1">Sensor ID</span>
+                                        <input type="text" class="form-control" placeholder="Sensor ID" name="sensorId" aria-label="sensorId" aria-describedby="basic-addon1">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1">Command</span>
+                                        <input type="text" class="form-control" placeholder="command" name="command" aria-label="command" aria-describedby="basic-addon1">
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-3">
+                                    <button type="submit" class="btn btn-primary">Send</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+            
+                    <div class="" id="Form9" style="display: none;">
+                        <form action="/sms/intialize/<%= locals.IMEI %>" method="POST">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-success text-light" id="basic-addon1">Password</span>
+                                        <input type="text" class="form-control" placeholder="password" name="password" aria-label="password" aria-describedby="basic-addon1" minlength="6" maxlength="6" title="Password must have 6 digit and numeric only" pattern="([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])" value="000000">
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-3">
+                                    <button type="submit" class="btn btn-primary">Initialize</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+            
+                    <div class="" id="Form10" style="display: none;">
+                        <form action="/sms/reboot/<%= locals.IMEI %>" method="POST">
+                            <div class="row">
+                                <div class="col-12">
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text bg-success text-light" id="basic-addon1">Password</span>
+                                            <input type="text" class="form-control" placeholder="password" name="password" aria-label="password" aria-describedby="basic-addon1" minlength="6" maxlength="6" title="Password must have 6 digit and numeric only" pattern="([0-9])([0-9])([0-9])([0-9])([0-9])([0-9])" value="000000">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mt-3">
+                                        <button type="submit" class="btn btn-primary">Reboot</button>
+                                    </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-7"></div>
+            </div>
+        </div>
+
+        <div class="mb-5"></div>
+        <hr class="hr">
+        <div class="container-fluid mb-2">
+            <div class="row text-center">
+                <div class="col-1"></div>
+                <div class="col-md-4 text-center p-3">
+                    <div style="display: inline;">
+                        <ul class="pagination">
+                            <li class="page-item">
+                            <a class="page-link" href="/sms/<%= IMEI %>" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="/sms/<%= IMEI %>?offset=<%= locals.offset - 50 %>">Previous</a></li>
+                            <li class="page-item"><a class="page-link disabled" href="" ><%= locals.offset/50 %></a></li>
+                            <li class="page-item"><a class="page-link" href="/sms/<%= IMEI %>?offset=<%= locals.offset + 50 %>">Next</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-1"></div>
+                <div class="col-md-5 p-3">
+                </div>
+                <div class="col-4"></div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10">
+                    <div class="container-fluid">
+                        <div class="row text-center">
+                            <table class="table table-dark table-striped table-hover" style="color: white;">
+                                <thead>
+                                    <tr class="text-primary small-text">
+                                      <th scope="col">#</th>
+                                      <th scope="col">SMS ID</th>
+                                      <th scope="col">To</th>
+                                      <th scope="col">Body</th>
+                                    </tr>
+            
+                                    <tbody class="small-text">
+                                        <% if(locals.messages.length == 0) { %>
+                                            <tr>
+                                                <td>null</td>
+                                                <td>null</td>
+                                                <td>null</td>
+                                                <td>null</td>
+                                            </tr>
+                                        <% } else { %>
+                                            <% console.log('No') %>
+                                            <% locals.messages.forEach((res, i) => { %>
+                                                <tr>
+                                                    <th scope="row"><%= i+1 %></th>
+                                                    <td><%= res.messageId %></td>
+                                                    <td><%= res.to %></td>
+                                                    <td><%= res.message %></td>
+                                                </tr>
+                                            <% })%>
+                                        <% } %>
+                                    </tbody>
+                                  </thead>
+                            </table>
+                        </div>
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+        </div>
+    </main>
+    <script src="/js/bootstrap.min.js"></script>
+    <script>
+        const formSelect = document.getElementById('formSelect')
+
+        formSelect.addEventListener('change', () => {
+            displayNone()
+            document.getElementById('Form' + formSelect.value).style.display = 'block'
+        })
+
+        function displayNone(){
+            for (let i = 1; i < 11; i++) {
+                document.getElementById('Form' + i).style.display = 'none'          
+            }
+        }
+    </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/sockets.js"></script>
+</body>
+
+</html>
