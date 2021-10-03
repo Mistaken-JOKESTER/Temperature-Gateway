@@ -101,7 +101,7 @@
             <div class="row">
                 <div class="col-1"></div>
                 <div class="col-md-5">
-                    <form class="d-flex" method="POST" action="/serachSensor">
+                    <form class="d-flex" method="POST" action="/<%= low?'low':'' %>serachSensor">
                         <input class="form-control me-2" type="number" name="sensor_id" placeholder="Sensor ID" aria-label="Search" value="<%= locals.search %>">
                         <button class="btn btn-outline-success" type="submit">Search</button>
                     </form>
@@ -111,13 +111,13 @@
                     <div>
                         <ul class="pagination">
                           <li class="page-item">
-                            <a class="page-link" href="/sensors" aria-label="Previous">
+                            <a class="page-link" href="/<%= low?'low':'' %>sensors" aria-label="Previous">
                               <span aria-hidden="true">&laquo;</span>
                             </a>
                           </li>
-                          <li class="page-item"><a class="page-link" href="/sensors?offset=<%= locals.offset - 50 %>">Previous</a></li>
+                          <li class="page-item"><a class="page-link" href="/<%= low?'low':'' %>sensors?offset=<%= locals.offset - 50 %>">Previous</a></li>
                           <li class="page-item"><a class="page-link" href=""><%= locals.offset/50 %></a></li>
-                          <li class="page-item"><a class="page-link" href="/sensors?offset=<%= locals.offset + 50 %>">Next</a></li>
+                          <li class="page-item"><a class="page-link" href="/<%= low?'low':'' %>sensors?offset=<%= locals.offset + 50 %>">Next</a></li>
                         </ul>
                     </div>
                 </div>

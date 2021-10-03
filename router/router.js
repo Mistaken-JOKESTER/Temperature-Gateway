@@ -323,11 +323,11 @@ router.post('/lowserachSensor', redirectLogin, (req, res) => {
             req.session.deviceSearch = ''
             req.session.sensorSearch = ''
             req.session.lowsensorSearch = ''
-            return res.redirect('/sensors')
+            return res.redirect('/lowsensors')
         }
         if(!sensor_id || (Number(sensor_id)).toString() == 'NaN' || sensor_id < 1){
             req.flash('error_msg', [{msg:"Invalid search"}])
-            return res.redirect('/sensors')
+            return res.redirect('/lowsensors')
         }
 
         req.session.deviceSearch = ''
