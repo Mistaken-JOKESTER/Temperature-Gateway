@@ -126,7 +126,7 @@
                                 <% locals.response.forEach((res, i) => { %>
                                     <tr>
                                         <th scope="row"><%= i+1 %></th>
-                                        <td><%= res.IMEI %></td>
+                                        <td><a href="/viewDevice/<%= res.IMEI %>" style="text-decoration: none; color: black;"><%= res.IMEI %></a></td>
                                         <td><%= res.type %></td>
                                         <td><%= res.firmware %></td>
                                         <td><%= res.connectToPower?'🟢':'🔴' %></td>
@@ -146,6 +146,7 @@
                 </table>
             </div>
     </main>
+    
     <script src="/js/bootstrap.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/sockets.js"></script>
