@@ -1,2 +1,6 @@
-sensors ejs - batter url
-socket js client url
+# change ip in 
+views/sensors.ejs - batter url
+view/public/js/socket.js client url
+
+#mysql2 promise to mysql session
+/node_modules/express-mysql-session/index.js require('mysql2/promise')

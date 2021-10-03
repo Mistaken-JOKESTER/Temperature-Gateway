@@ -65,6 +65,19 @@
         .smooth{
             transition: 1s ease-in;
         }
+        .instruct{
+            border: 2px rgb(70, 70, 70);
+            border-radius: 10px;
+            padding: 5px;
+            background-color: white;
+            color: black;
+            height: 200px;
+            overflow-y: auto;
+        }
+        .instruct small{
+            overflow-y: auto;
+            max-height: 200px;
+        }
     </style>
 </head>
 
@@ -364,11 +377,180 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-12 mb-1">
+                                    <select class="form-select form-select-sm" aria-label="Default select example" id='commandSelect'>
+                                        <option value="1">Low voltage alarming function</option>
+                                        <option value="2">Set heartbeat packet interval</option>
+                                        <option value="3">Set temperature alarming function (TAG08)</option>
+                                        <option value="4">Set temperature/humidity alarming function (TAG08B)</option>
+                                        <option value="5">Set trasmit power</option>
+                                        <option value="6">Set the RTC time</option>
+                                        <option value="7">Set max data sending dealy time</option>
+                                        <option value="8">Set the time interval of reading</option>
+                                        <option value="9">Extend setting</option>
+                                        <option value="10">Set work mode</option>
+                                        <option value="11">Set buzzer beep time</option>
+                                        <option value="12">Turn off buzzer</option>
+                                        <option value="13">Set the sending protocol</option>
+                                        <option value="14">set the removal margin of temperature</option>
+                                    </select>
+                                </div>
                                 <div class="col-12">
                                     <div class="input-group mb-3">
-                                        <span class="input-group-text" id="basic-addon1">Command</span>
+                                        <span class="input-group-text bg-primary text-light" id="basic-addon1">Command</span>
                                         <input type="text" class="form-control" placeholder="command" name="command" aria-label="command" aria-describedby="basic-addon1">
                                     </div>
+                                </div>
+                                <div class="instruct mx-2" id="Cmd1">
+                                    <small>
+                                        Format - <strong>*01,A,X,Y# </strong> <br><br>
+                                        A=0: disable this function
+                                        <br>A=1: enable this function (default)
+                                        <br>X: low voltage threshold, [2200-3600], unit:1mV, default:2200
+                                        <br>Y: transmit interval after low voltage
+                                        alarming, [1-1440], unit:min, default:30
+                                    </small>
+                                </div>
+                                <div class="instruct mx-2" id="Cmd1" style="display:none;">
+                                    <small>
+                                        Format - <strong>*01,A,X,Y# </strong> <br><br>
+                                        A=0: disable this function
+                                        <br>A=1: enable this function (default)
+                                        <br>X: low voltage threshold, [2200-3600], unit:1mV, default:2200
+                                        <br>Y: transmit interval after low voltage
+                                        alarming, [1-1440], unit:min, default:30
+                                    </small>
+                                </div>
+                                <div class="instruct mx-2" id="Cmd2" style="display:none;">
+                                    <small>
+                                        Format - <strong>*02,X# </strong> <br><br>
+                                        X: [1-1440], unit:min, default:15
+                                    </small>
+                                </div>
+                                <div class="instruct mx-2" id="Cmd3" style="display:none;">
+                                    <small>
+                                        Format - <strong>*03,A,X,Y, Z# </strong> <br><br>
+                                        A=0: disable this function (default)
+                                        <br>A=1: enable this function
+                                        <br>X: high temperature threshold, [-40-125], unit: ℃, default:100;
+                                        <br>Y: low temperature threshold, [-40-125],
+                                        unit:℃, default:0;
+                                        <br>Z:transmit interval after temperature
+                                        alarming, [1-1440], unit:min, default:1
+                                    </small>
+                                </div>
+                                <div class="instruct mx-2" id="Cmd4" style="display:none;">
+                                    <small>
+                                        Format - <strong>*03,A,X,Y,M,N,Z#</strong> <br><br>
+                                        A=0: disable this function (default)
+                                        <br>A=1: enable this function
+                                        <br>X: high temperature threshold, [-40-125], unit:℃, default:100;
+                                        <br>Y: low temperature threshold, [-40-125], unit:℃, default:0;
+                                        <br>M: high humidity threshold, [0-100], unit:%, default:100
+                                        <br>N: low humidity threshold, [0-100], unit:%, default:0
+                                        <br>Z: transmit interval after
+                                        temperature/humidity alarming, [1-1440], unit:min, default:1
+                                    </small>
+                                </div>
+                                <div class="instruct mx-2" id="Cmd5" style="display:none;">
+                                    <small>
+                                        Format - <strong>*04,X#</strong> <br><br>
+                                        X:
+                                        <br>15=20dbm,default;
+                                        <br>14=19dbm;
+                                        <br>13=18dbm;
+                                        <br>12=17dbm;
+                                        .
+                                        .
+                                        <br>.<br>3=8dbm;
+                                        <br>2=7dbm;
+                                        <br>1=6dbm;
+                                        <br>0=5dbm;
+                                        <br>255=Automatic adjustment(defaul
+                                    </small>
+                                </div>
+                                <div class="instruct mx-2" id="Cmd6" style="display:none;">
+                                    <small>
+                                        Format - <strong>*06,Year,Month,Day,Hour,Minute, Second# </strong> <br><br>
+                                        For example: *06,18,08,13,12,19,56#
+                                    </small>
+                                </div>
+                                <div class="instruct mx-2" id="Cmd7" style="display:none;">
+                                    <small>
+                                        Format - <strong>*07,X#</strong> <br><br>
+                                        X: delay time, [0,300], unit: second, default: 180
+                                    </small>
+                                </div>
+                                <div class="instruct mx-2" id="Cmd8" style="display:none;">
+                                    <small>
+                                        Format - <strong>*08,X#</strong> <br><br>
+                                        X: [0,65535], unit:second, default:30
+                                        0 indicates that temperature and humidity
+                                        data are taken at irregular intervals, and
+                                        temperature and humidity data are not
+                                        obtained until the transmission interval
+                                    </small>
+                                </div>
+                                <div class="instruct mx-2" id="Cmd9" style="display:none;">
+                                    <small>
+                                        Format - <strong>*09,ABCDEFGH#</strong> <br><br>
+                                        A=0, disable ACK function ;
+                                        <br>A=1, enable ACK function, it must be used
+                                        with the gateway(default);
+                                        <br>B=0, sending data does not include RTC
+                                        time (default);
+                                        <br>B=1, sending data including RTC time (this
+                                        is recommended when you enable ACK
+                                        function);
+                                        <br>B only works if command 40=0;
+                                        <br>C=0,The TAG temperature shows
+                                        Celsius(default);
+                                        <br>C=1,The temperature data shows
+                                        Fahrenheit;
+                                        <br>D=0;
+                                        <br>E=0;
+                                        <br>F=0;
+                                    </small>
+                                </div>
+                                <div class="instruct mx-2" id="Cmd10" style="display:none;">
+                                    <small>
+                                        Format - <strong>*35,X#</strong> <br><br>
+                                        X=0,turn off(default)
+                                        <br>X=1,turn on
+                                    </small>
+                                </div>
+                                <div class="instruct mx-2" id="Cmd11" style="display:none;">
+                                    <small>
+                                        Format - <strong>*36,X#</strong> <br><br>
+                                        X:beep time [0,65535],Unit:second,0 means
+                                        the buzzer is not working(default);
+                                        <br>65535 means the buzzer will work until the
+                                        temperature and humidity return to normal
+                                    </small>
+                                </div>
+                                <div class="instruct mx-2" id="Cmd12" style="display:none;">
+                                    <small>
+                                        Format - <strong>*37,0#</strong> <br><br>
+                                        .....
+                                    </small>
+                                </div>
+                                <div class="instruct mx-2" id="Cmd13" style="display:none;">
+                                    <small>
+                                        Format - <strong>*40,X#</strong> <br><br>
+                                        X=0,Not included RTC time, humidity unit is %；
+                                        <br>X=1,Including RTC time,humidity unit is %
+                                        (tag08 default);
+                                        <br>X=2,,Not included RTC time, humidity unit is
+                                        0.1%；
+                                        <br>X=3,Including RTC time,humidity unit is 0.1%
+                                        (tag08B default);
+                                    </small>
+                                </div>
+                                <div class="instruct mx-2" id="Cmd14" style="display:none;">
+                                    <small>
+                                        Format - <strong>*41,X#</strong> <br><br>
+                                        X:Temperature value,[0,120],default:0, unit:℃
+                                    </small>
                                 </div>
                                 <div class="col-12 mt-3">
                                     <button type="submit" class="btn btn-primary">Send</button>
@@ -485,15 +667,29 @@
     <script src="/js/bootstrap.min.js"></script>
     <script>
         const formSelect = document.getElementById('formSelect')
+        const commandSelect = document.getElementById('commandSelect')
 
         formSelect.addEventListener('change', () => {
-            displayNone()
+            displayFNone()
             document.getElementById('Form' + formSelect.value).style.display = 'block'
         })
 
-        function displayNone(){
+        commandSelect.addEventListener('change', () => {
+            console.log(commandSelect.value)
+            displayCNone()
+            document.getElementById('Cmd' + commandSelect.value).style.display = 'block'
+        })
+
+        function displayFNone(){
             for (let i = 1; i < 11; i++) {
                 document.getElementById('Form' + i).style.display = 'none'          
+            }
+        }
+
+        function displayCNone(){
+            for (let i = 1; i < 15; i++) {
+                console.log('Cmd' + i)
+                document.getElementById('Cmd' + i).style.display = 'none'          
             }
         }
     </script>
