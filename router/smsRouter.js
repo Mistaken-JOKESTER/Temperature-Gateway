@@ -1,5 +1,5 @@
 const executeQuerySync = require('../DatabaseFunctions/executeDBquery')
-const { sendSMS } = require('../telstra/getSIMData')
+const { sendSMS, sendSimpleSMS } = require('../telstra/getSIMData')
 const { getToken, TelstraAPI } = require('../telstra/makeRequest')
 const { redirectLogin, redirectHome } = require('./redirects')
 const router = require('express').Router()
@@ -150,8 +150,8 @@ router.post('/sms/changeBand/:IMEI', redirectLogin, async (req, res) => {
         let {password, band} = req.body
 
         band = Number(band)
-        if(!band || band == 'Nan' || band != 0 || band != 1 || band != 2 || band != 4){
-            band = 4
+        if(!band || band == 'Nan' || band > 3 || band < 0){
+            band = 3
         }
 
         let {IMEI} = req.params
@@ -204,11 +204,20 @@ router.post('/sms/changeBand/:IMEI', redirectLogin, async (req, res) => {
 
 router.post('/sms/setAUP/:IMEI', redirectLogin, async (req, res) => {
     try{
-        let {password, apn, username, pass} = req.body
-        console.log({password, apn, username, pass})
+        let {password, apn, username, pass, pdp, auth} = req.body
         apn = apn?apn.slice(0,27):""
         username = username?username.slice(0,27):""
         pass = pass?pass.slice(0,27):""
+
+        pdp = Number(pdp)
+        if(!pdp || pdp == 'Nan' || pdp > 3 || pdp < 0){
+            pdp = 0
+        }
+
+        auth = Number(auth)
+        if(!auth || auth == 'Nan' || auth > 3 || auth < 0){
+            auth = 0
+        }
 
         let {IMEI} = req.params
         if(!IMEI || (Number(IMEI)).toString() == 'NaN' || IMEI < 0){
@@ -232,7 +241,7 @@ router.post('/sms/setAUP/:IMEI', redirectLogin, async (req, res) => {
             return res.redirect(redirectURL)
         }
 
-        const sms_body = `*${password},011,${apn},${username},${pass}#`
+        const sms_body = `*${password},011,${apn},${username},${pass},${pdp},${auth}#`
         const [sms_satus, sms_data] = await sendSMS(sms_body, IMEI)
 
         console.log(sms_satus, sms_data)
@@ -609,6 +618,58 @@ router.post('/sms/reboot/:IMEI', redirectLogin, async (req, res) => {
         req.flash('success_msg', [{msg:"SMS sent successfully"}])
         res.redirect(redirectURL)
     } catch (e) {
+        console.log(e)
+        req.flash('error_msg', [{msg:'Internal app error, plesase refer logs or console.'}])
+        res.redirect('/')
+    }
+})
+
+router.get('/customeSMS', redirectLogin, async(req, res) => {
+    try{
+        const error_msg = req.flash('error_msg')
+        const success_msg = req.flash('success_msg')
+
+        res.render('customeSMS', {
+            error_msg,
+            success_msg
+        })
+    } catch(e) {
+        console.log(e)
+        req.flash('error_msg', [{msg:'Internal app error, plesase refer logs or console.'}])
+        res.redirect('/')
+    }
+})
+
+router.post('/customeSMS', redirectLogin, async(req, res) => {
+    try{
+        console.log(req.body)
+        const {number, body} = req.body
+
+        if(!number || !body){
+            req.flash('error_msg', [{msg: 'Please fill all feilds.'}])
+            return res.redirect('/customeSMS')
+        }
+
+        if(typeof body !== 'string' || body.length > 160 || body.length == 0){
+            req.flash('error_msg', [{msg: 'Either message is invalid, empty or longer than 160 characters.'}])
+            return res.redirect('/customeSMS')
+        }
+
+        if(!/^\+[1-9]{1}[0-9]{5,11}/.test(number)){
+            req.flash('error_msg', [{msg: 'Provide a valid mobile number with country code.'}])
+            return res.redirect('/customeSMS')
+        }
+
+        const [sms_status, sms_data] = await sendSimpleSMS(number,body)
+        if(sms_status == 0){
+            req.flash('error_msg', sms_data)
+        }else {
+            req.flash('success_msg', sms_data)
+        }
+
+        return res.redirect('/customeSMS')
+
+    } catch(e) {
         console.log(e)
         req.flash('error_msg', [{msg:'Internal app error, plesase refer logs or console.'}])
         res.redirect('/')

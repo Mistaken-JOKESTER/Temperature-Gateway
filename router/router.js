@@ -140,10 +140,10 @@ router.get('/viewDevice/:IMEI', redirectLogin, async (req, res) => {
         }
         offset = Number(offset)
 
-        const [resluts, error] = await executeQuerySync(`call gateway_latest(${IMEI});`)
-        //console.log(resluts, error)
+        const [resluts, error] = await executeQuerySync(`call gateway_latest(${IMEI}); select * from sensor where gateway_id = ${IMEI}`)
+        //console.log(resluts[6], error)
 
-        //console.log(resluts[0])
+        // console.log(resluts[0])
         if(error || !resluts[0][0]['@status']){
             req.flash('error_msg', error||[{msg:'Device not found'}])
             return res.redirect('/dashboard')
@@ -156,7 +156,8 @@ router.get('/viewDevice/:IMEI', redirectLogin, async (req, res) => {
             gateway_data: resluts[2][0],
             lsb:resluts[1][0].lsb_present?resluts[3][0]:{},
             status:resluts[1][0].status_present?resluts[4][0]:{},
-            isTelsta:true
+            isTelsta:true,
+            sensors: resluts[6]
         })
     } catch(e) {
         console.log(e)
@@ -177,10 +178,24 @@ router.get('/sensorsR', redirectLogin, async(req, res) => {
     }
 })
 
+router.get('/lowsensorsR', redirectLogin, async(req, res) => {
+    try{
+        req.session.sensorSearch = ''
+        req.session.deviceSearch = ''
+        req.session.lowsensorSearch = ''
+        res.redirect('/lowsensors')
+    } catch(e) {
+        console.log(e)
+        req.flash('error_msg', [{msg:'Internal app error, plesase refer logs or console.'}])
+        res.redirect('/')
+    }
+})
+
 router.get('/sensors', redirectLogin, async (req, res) => {
     try{
         let search = req.session.sensorSearch
         req.session.deviceSearch = ''
+        req.session.lowsensorSearch = ''
 
         if(!search || (Number(search)).toString() == 'NaN' || search < 1){
             req.session.sensorSearch=''
@@ -198,10 +213,12 @@ router.get('/sensors', redirectLogin, async (req, res) => {
 
         let query = ''
         if(search != ''){
-            query = `select * from sensor where concat(sensor.sensor_id, '') REGEXP '${search}' order by sensor_id desc limit 50 offset ${offset};`
+            query = `select * from sensor where concat(sensor.sensor_id, '') REGEXP '${search}'`
         } else {
-            query = `select * from sensor order by sensor_id desc limit 50 offset ${offset};`
+            query = `select * from sensor`
         }
+
+        query += ` order by sensor_id desc limit 50 offset ${offset};`
 
         const [resluts, error] = await executeQuerySync(query)
         //console.log(resluts, error)
@@ -215,7 +232,59 @@ router.get('/sensors', redirectLogin, async (req, res) => {
             success_msg,
             response:resluts,
             offset: offset,
-            search
+            search,
+            low:0
+        })
+    } catch(e) {
+        console.log(e)
+        req.flash('error_msg', [{msg:'Internal app error, plesase refer logs or console.'}])
+        res.redirect('/')
+    }
+})
+
+router.get('/lowsensors', redirectLogin, async (req, res) => {
+    try{
+        let search = req.session.lowsensorSearch
+        req.session.deviceSearch = ''
+        req.session.sensorSearch = ''
+
+        if(!search || (Number(search)).toString() == 'NaN' || search < 1){
+            req.session.lowsensorSearch=''
+            search = ''
+        }
+
+        const error_msg = req.flash('error_msg')
+        const success_msg = req.flash('success_msg')
+
+        let {offset} = req.query
+        if(!offset || (Number(offset)).toString() == 'NaN' || offset < 0){
+            offset = 0
+        }
+        offset = Number(offset)
+
+        let query = ''
+        if(search != ''){
+            query = `select * from sensor where concat(sensor.sensor_id, '') REGEXP '${search}' AND battery_voltage < 1`
+        } else {
+            query = `select * from sensor where battery_voltage < 1`
+        }
+            
+        query += ` order by sensor_id desc limit 50 offset ${offset};`
+
+        const [resluts, error] = await executeQuerySync(query)
+        //console.log(resluts, error)
+
+        if(error){
+            error_msg.push(...error)
+        }
+
+        res.render('sensors', {
+            error_msg,
+            success_msg,
+            response:resluts,
+            offset: offset,
+            search,
+            low:1
         })
     } catch(e) {
         console.log(e)
@@ -240,6 +309,31 @@ router.post('/serachSensor', redirectLogin, (req, res) => {
         req.session.deviceSearch = ''
         req.session.sensorSearch = Number(sensor_id)
         res.redirect('/sensors')
+    } catch(e) {
+        console.log(e)
+        req.flash('error_msg', [{msg:'Internal app error, plesase refer logs or console.'}])
+        res.redirect('/')
+    }
+})
+
+router.post('/lowserachSensor', redirectLogin, (req, res) => {
+    try{
+        const {sensor_id} = req.body
+        if(sensor_id == ''){
+            req.session.deviceSearch = ''
+            req.session.sensorSearch = ''
+            req.session.lowsensorSearch = ''
+            return res.redirect('/sensors')
+        }
+        if(!sensor_id || (Number(sensor_id)).toString() == 'NaN' || sensor_id < 1){
+            req.flash('error_msg', [{msg:"Invalid search"}])
+            return res.redirect('/sensors')
+        }
+
+        req.session.deviceSearch = ''
+        req.session.sensorSearch = ''
+        req.session.lowsensorSearch = Number(sensor_id)
+        res.redirect('/lowsensors')
     } catch(e) {
         console.log(e)
         req.flash('error_msg', [{msg:'Internal app error, plesase refer logs or console.'}])
@@ -301,7 +395,7 @@ router.get('/batteryData/:sensorID', async (req, res) => {
         }
         sensorID = Number(sensorID)
 
-        const [resluts, error] = await executeQuerySync(`SELECT battery_voltage bv FROM sensor_data where sensor_id = ${sensorID} LIMIT 50;`)
+        const [resluts, error] = await executeQuerySync(`SELECT battery_voltage bv FROM sensor_data where sensor_id = ${sensorID} LIMIT 100;`)
         console.log(resluts, error)
 
         if(error){
@@ -492,7 +586,7 @@ router.get('/sms/:IMEI', redirectLogin, async (req, res) => {
         }
         offset = Number(offset)
 
-        const [exesist, error] = await executeQuerySync(`select IMEI from gateway where IMEI = ?; select * from messages where gateway_id = ? order by id desc limit 50 offset ?;`, [IMEI, IMEI, offset])
+        const [exesist, error] = await executeQuerySync(`select IMEI from gateway where IMEI = ?; select * from messages where gateway_id = ? order by id desc limit 50 offset ?; select sensor_id from sensor order by sensor_id;`, [IMEI, IMEI, offset])
         //console.log(exesist, error)
 
         if(error || !exesist[0].length){
@@ -505,7 +599,8 @@ router.get('/sms/:IMEI', redirectLogin, async (req, res) => {
             messages:exesist[1],
             error_msg,
             success_msg,
-            offset
+            offset,
+            sensors:exesist[2]
         })
     } catch (e) {
         console.log(e)

@@ -9,6 +9,7 @@
 
 
     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
         <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
             <path
@@ -95,6 +96,8 @@
                           <th scope="col">Type</th>
                           <th scope="col">Firmware</th>
                           <th scope="col">Power</th>
+                          <th scope="col">Telstra</th>
+                          <th scope="col">SMS</th>
                           <th scope="col">RTC Time</th>
                           <th scope="col">IP</th>
                           <th scope="col">PORT</th>
@@ -117,6 +120,7 @@
                                     <td>null</td>
                                     <td>null</td>
                                     <td>null</td>
+                                    <td>null</td>
                                 </tr>
                             <% } else { %>
                                 <% locals.response.forEach((res, i) => { %>
@@ -126,7 +130,9 @@
                                         <td><%= res.type %></td>
                                         <td><%= res.firmware %></td>
                                         <td><%= res.connectToPower?'🟢':'🔴' %></td>
-                                        <td><%= res.rtc_time %></td>
+                                        <td><a class="nav-link px-3" href="/telstra/<%= res.IMEI %>" style="padding: 0;"><img src="/telstra.ico" alt="Telstra API" style="width: 20px;"></a></td>
+                                        <td><a href="/sms/<%= res.IMEI %>"><i class="fa fa-envelope" aria-hidden="true" style="font-size: 24px;"></i></a></td>
+                                        <td><%= res.rtc_time.toGMTString() %></td>
                                         <td><%= res.ip.split('ffff:')[1] %></td>
                                         <td><%= res.port %></td>
                                         <td><%= res.status_present?"✅":"✖" %></td>

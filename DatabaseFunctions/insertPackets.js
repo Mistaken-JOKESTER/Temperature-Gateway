@@ -2,7 +2,7 @@ const DbQuerySync = require("./executeDBquery")
 const utils = require('util')
 
 const insertPacketQuery = `call add_new_packet(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
-const insertSensorQuery = `call add_sensor(?,?,?,?,?,?,?,?,?,?,?,?);`
+const insertSensorQuery = `call add_sensor(?,?,?,?,?,?,?,?,?,?,?,?,?);`
 
 const insertPacket = async (type, data, ip, port) => {
     const pakcetData_array = []
@@ -22,7 +22,7 @@ const insertPacket = async (type, data, ip, port) => {
         let sensor_data_array = []
         
         console.log("my : ", sensor.buttonPressed)
-        sensor_data_array.push(Number(sensor.id), data.sensor_info.type, sensor.buttonPressed, JSON.stringify(sensor.status), sensor.battery_voltage, sensor.sensor_condition, sensor.temperature, sensor.humidity, Number(sensor.RSSI), sensor.time, gateway_data_id,Number(data.IMEI))
+        sensor_data_array.push(Number(sensor.id), Number(data.IMEI), data.sensor_info.type, sensor.buttonPressed, JSON.stringify(sensor.status), sensor.battery_voltage, sensor.sensor_condition, sensor.temperature, sensor.humidity, Number(sensor.RSSI), sensor.time, gateway_data_id,Number(data.IMEI))
         const [result1, error] = await DbQuerySync(insertSensorQuery, sensor_data_array)
         if(error){
             //save this to logs

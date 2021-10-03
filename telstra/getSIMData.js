@@ -34,8 +34,7 @@ const sendSMS = async (sms_body, IMEI) => {
     const request_url = `https://tapi.telstra.com/v2/messages/sms`
     const data = {
         to: ["+61" + number_data.toString()],
-        body: sms_body,
-        "userMsgRef": "foo-app"
+        body: sms_body
     }
 
     const [sms_status, sms_data] = await TelstraAPI(request_url, data, 'POST', {})
@@ -46,4 +45,24 @@ const sendSMS = async (sms_body, IMEI) => {
     return [sms_status, sms_data]
 }
 
-module.exports = {getSimData, sendSMS, getPhoneNumber}
+const sendSimpleSMS = async (number, sms_body) => {
+    const [token_status, token_data] = await getToken()
+    if(token_status == 0){
+        return [token_status, token_data]
+    }
+
+    const request_url = `https://tapi.telstra.com/v2/messages/sms`
+    const data = {
+        to: [number.toString()],
+        body: sms_body
+    }
+
+    const [sms_status, sms_data] = await TelstraAPI(request_url, data, 'POST', {})
+    if(sms_status == 0){
+        return [sms_status, sms_data]
+    }
+
+    return [sms_status, sms_data]
+}
+
+module.exports = {getSimData, sendSMS, getPhoneNumber, sendSimpleSMS}

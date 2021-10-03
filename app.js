@@ -124,7 +124,7 @@ app.post('/sensro_msg/notify', async (req, res) => {
     } */
     res.send({status:1})
     
-    const [response_data, response_error] = [1, null] //await executeQuerySync('CALL add_response(?,?,?,?);', [messageId, from, body, sentTimestamp.split('+')[0]])
+    const [response_data, response_error] = await executeQuerySync('CALL add_response(?,?,?,?);', [messageId, from, body, sentTimestamp.split('+')[0]])
     console.log(response_data, response_error)
     if(response_error){
       console.log("DB ERROR")

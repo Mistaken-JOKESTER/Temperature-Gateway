@@ -15,11 +15,15 @@
                     <a class="nav-link" href="/sensorsR">Sensors</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/timeline">Timeline</a>
+                    <a class="nav-link" href="/lowsensorsR" style="color: red;"><i class="fa fa-battery-1" style="font-size:24px;color:red"></i></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/responses">Responses</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/timeline">Timeline</a>
+                </li>
+                
                 <% if(locals.isTelsta) { %>
                     <li class="nav-item">
                         <a class="nav-link px-3" href="/telstra/<%= gateway.IMEI %>"><img src="https://dev.telstra.com/sites/default/files/favicon.ico" alt="Telstra API" style="width: 20px;"> Telstra</a>
@@ -30,9 +34,17 @@
                 <% } %>
             </ul>
             <form class="d-flex">
+                <a class="nav-link" href="/customeSMS px-4"><i class="fa fa-envelope" aria-hidden="true" style="font-size: 20px;"></i></a>
+                <a style="text-decoration: none; color: white;" class="px-2" disabled><button type="button"
+                    class="btn btn-primary btn-sm px-1" id="tmz"></button></a>
                 <a href="/logout" style="text-decoration: none; color: white;"><button type="button"
                         class="btn btn-primary btn-sm">Logout</button></a>
             </form>
+            <script>
+                window.onload = () => {
+                    document.getElementById('tmz').innerHTML = new Date().toString().match(/([A-Z]+[\+-][0-9]+.*)/)[1]
+                }
+            </script>
         </div>
     </div>
 </nav>

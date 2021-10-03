@@ -9,6 +9,7 @@
 
 
     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
         <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
             <path
@@ -30,7 +31,7 @@
         }
 
         html{
-            background-color: rgb(44, 44, 44);
+            background-color: rgb(32, 32, 32);
         }
 
         .small-text{
@@ -234,6 +235,22 @@
                                         <input type="text" class="form-control" placeholder="Password" name="pass" aria-label="pass" aria-describedby="basic-addon1" maxlength="28">
                                     </div>
                                 </div>
+                                <div class="col-12 mb-3">
+                                    <select class="form-select" aria-label="Default select example" name="pdp">
+                                        <option value="0">IP/default</option>
+                                        <option value="1">IPV6</option>
+                                        <option value="2">IPV4V6</option>
+                                        <option value="3">PPP</option>
+                                      </select>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <select class="form-select" aria-label="Default select example" name="auth">
+                                        <option value="0">None</option>
+                                        <option value="1">PAP, default</option>
+                                        <option value="2">CHAP</option>
+                                        <option value="3">PAP or CHAP</option>
+                                      </select>
+                                </div>
                                 <div class="col-12 mt-3">
                                     <button type="submit" class="btn btn-primary">Send</button>
                                 </div>
@@ -339,9 +356,12 @@
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text" id="basic-addon1">Sensor ID</span>
-                                        <input type="text" class="form-control" placeholder="Sensor ID" name="sensorId" aria-label="sensorId" aria-describedby="basic-addon1">
+                                    <div class="col-12 mb-3">
+                                        <select class="form-select" aria-label="Default select example" name="sensorId">
+                                            <% locals.sensors.forEach(sen => { %>
+                                                <option value="<%= sen.sensor_id %>"><%= sen.sensor_id %></option>
+                                            <% }) %>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-12">
