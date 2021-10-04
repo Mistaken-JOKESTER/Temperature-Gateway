@@ -25,12 +25,16 @@
     </svg>
 
     <style>
-        .body{
+        .body {
             position: absolute;
-            background-color: #ffffff; /* Used if the image is unavailable */
-            height: 100px; /* You must set a specified height */
-            background-position: center; /* Center the image */
-            background-repeat: no-repeat; /* Do not repeat the image */
+            background-color: #ffffff;
+            /* Used if the image is unavailable */
+            height: 100px;
+            /* You must set a specified height */
+            background-position: center;
+            /* Center the image */
+            background-repeat: no-repeat;
+            /* Do not repeat the image */
             filter: blur(5px);
             top: 50%;
             left: 50%;
@@ -44,20 +48,16 @@
 </head>
 
 <body style="min-height: 100vh;">
-    <div class="body" >
+    <div class="body">
 
     </div>
     <nav class="navbar navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img src="https://image.flaticon.com/icons/png/512/1819/1819378.png" alt="" style="width: 20px;">
-                Temperature
-            </a>
             <ul class="nav nav-pills">
                 <% if(logged_in) { %>
-                    <li class="nav-item">
-                        <a class="btn btn-outline-success" href="/dashboard">Admin Panel</a>
-                    </li>
+                <li class="nav-item">
+                    <a class="btn btn-outline-success" href="/dashboard">Admin Panel</a>
+                </li>
                 <% } %>
                 <li class="nav-item">
                     <a class="nav-link" href="/albums">About</a>
@@ -71,33 +71,38 @@
     <div id="login">
         <div class="container-fluid">
             <div class="row">
-              <div class="col-sm-4"></div>
-              <div class="col-sm-4 p-5" style="margin-top: 5vh;">
-                <form method="POST" action="/login" onsubmit="loading()">
-                  <div class="mb-3 text-center">
-                    <label for="exampleInputEmail1" class="form-label blockquote"><strong>Admin </strong>Login</label>
-                  </div>
-                  <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Username</label>
-                    <input type="text" class="form-control" name="username" placeholder="username" required>
-                  </div>
-                  <div class="mb-3">
-                    <label for="exampleInputPassword1" class="form-label">Password</label>
-                    <input type="password" class="form-control" name="password" placeholder="••••••••" required>
-                  </div>
-                  <div class="text-center" id="submitBtn">
-                    <button type="submit" name="submit" class="btn btn-primary" id="submitForm" value="Login">Login</button>
-                  </div>
-                  <div id="Loading" style="display: none;" class="text-center mb-4">
-                    <div class="spinner-border text-primary " role="status">
-                        <span class="visually-hidden">Loading...</span>
-                      </div>
-                  </div>
-                </form>
-              </div>
-              <div class="col-sm-4"></div>
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4 p-5" style="margin-top: 5vh;">
+                    <form method="POST" action="/login" onsubmit="loading()">
+                        <div class="mb-3 text-center">
+                            <img src="/logo.jpg" alt="logo" style="width: 300px;">
+                        </div>
+                        <div class="mb-3 text-center">
+                            <label for="exampleInputEmail1" class="form-label blockquote"><strong>Admin
+                                </strong>Login</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Username</label>
+                            <input type="text" class="form-control" name="username" placeholder="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Password</label>
+                            <input type="password" class="form-control" name="password" placeholder="••••••••" required>
+                        </div>
+                        <div class="text-center" id="submitBtn">
+                            <button type="submit" name="submit" class="btn btn-primary" id="submitForm"
+                                value="Login">Login</button>
+                        </div>
+                        <div id="Loading" style="display: none;" class="text-center mb-4">
+                            <div class="spinner-border text-primary " role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm-4"></div>
             </div>
-          </div>
+        </div>
     </div>
 
     <footer class="bg-light text-center text-lg-start"
@@ -110,7 +115,7 @@
 
     <script src="/js/bootstrap.min.js"></script>
     <script>
-        function loading(){
+        function loading() {
             document.getElementById('submitForm').style.display = 'none'
             document.getElementById('Loading').style.display = 'block'
         }

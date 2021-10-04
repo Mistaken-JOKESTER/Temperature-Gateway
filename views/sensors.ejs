@@ -215,7 +215,7 @@
             axios({
                 //13.233.233.37
                 method:'get',
-                url:"http://13.127.168.118:5000/batteryData/" + sensor_id
+                url:"http://3.105.116.226/batteryData/" + sensor_id
             }).then(res => {
                 console.log(res.data)
                 graph.innerHTML = '<canvas id="myChart" style="width:100%;max-width:800px;margin:auto;"></canvas>'

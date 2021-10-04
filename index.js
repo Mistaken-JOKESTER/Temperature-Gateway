@@ -3,8 +3,9 @@ const server_4g = require("./server/server_4g.js");
 const wifiServer = require("./server/server_wifi.js");
 const {appServer} = require('./app');
 
+
 //server for user
-appServer.listen(5000, () => {
+appServer.listen(5000, "localhost", () => {
     console.log("APP Pakcets on 5000")
 })
 

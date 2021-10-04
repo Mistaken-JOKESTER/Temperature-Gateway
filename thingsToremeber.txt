@@ -4,3 +4,5 @@ view/public/js/socket.js client url
 
 #mysql2 promise to mysql session
 /node_modules/express-mysql-session/index.js require('mysql2/promise')
+
+http://3.105.116.226/

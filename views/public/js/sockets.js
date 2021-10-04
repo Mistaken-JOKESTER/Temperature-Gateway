@@ -1,4 +1,4 @@
-const socket = io('http://13.127.168.118:5000')
+const socket = io('http://3.105.116.226/')
 
 socket.on("connect", () => {
     socket.send("Hello!")
